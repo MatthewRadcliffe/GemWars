@@ -5,11 +5,13 @@ public class TileInfo : MonoBehaviour {
     public int column { get; set; }
     public int row { get; set; }
     public int type { get; set; }
+    public int boardID { get; set; }
     
-    public void assign(int type, int row, int col) {
+    public void assign(int boardID, int type, int row, int col) {
         column = col;
         this.row = row;
         this.type = type;
+        this.boardID = boardID;
     }
 
     public static void swap(TileInfo one, TileInfo two)
@@ -30,6 +32,6 @@ public class TileInfo : MonoBehaviour {
         if(other == null || !(other is TileInfo) ) {
             throw new System.ArgumentException("uncomparable other tile");
         }
-        return type == other.type;
+        return type == other.type && boardID == other.boardID;
     }
 }

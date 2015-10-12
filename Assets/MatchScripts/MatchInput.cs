@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 public class MatchInput : MonoBehaviour {
 
-    private MatchBoard board;
+    public MatchBoard board;
     public LayerMask tileLayer;
     private GameObject currentlySelected;
     
@@ -31,7 +31,10 @@ public class MatchInput : MonoBehaviour {
     private void selectTile() {
         RaycastHit2D hit = tileHit();
         if(hit) {
-            currentlySelected = hit.collider.gameObject;
+            TileInfo info = hit.collider.gameObject.GetComponent<TileInfo>();
+            if (info.boardID == board.ID) {
+                currentlySelected = hit.collider.gameObject;
+            }
         }
     }
 

@@ -3,8 +3,9 @@ using System.Collections;
 using System.Collections.Generic;
 
 public class MatchBoard : MonoBehaviour {
-    public int GridWidth;
-    public int GridHeight;
+    public int GridWidth, GridHeight;
+    public int startingX, startingY;
+    public int ID;
     public GameObject[,] grid;
 
     public GameObject[] TilePrefabs;
@@ -18,6 +19,7 @@ public class MatchBoard : MonoBehaviour {
 
     private void CreateGrid() {
         grid = new GameObject[GridWidth, GridHeight];
+
         for (int x = 0; x < GridWidth; x++) {
             for (int y = 0; y < GridHeight; y++) {
                 grid[x, y] = makeRandom(x, y);
@@ -27,8 +29,8 @@ public class MatchBoard : MonoBehaviour {
 
     private GameObject makeRandom(int x, int y) {
         int randomTile = Random.Range(0, TilePrefabs.Length);
-        GameObject newTile = (GameObject)Instantiate(TilePrefabs[randomTile], new Vector2(x, y), Quaternion.identity);
-        newTile.GetComponent<TileInfo>().assign(randomTile, x, y);
+        GameObject newTile = (GameObject)Instantiate(TilePrefabs[randomTile], new Vector2(startingX + x, startingY + y), Quaternion.identity);
+        newTile.GetComponent<TileInfo>().assign(ID, randomTile, x, y);
         return newTile;
     }
 
@@ -38,6 +40,8 @@ public class MatchBoard : MonoBehaviour {
 
         TileInfo g1Info = g1.GetComponent<TileInfo>();
         TileInfo g2Info = g2.GetComponent<TileInfo>();
+
+        //print("Swapping (" + g1Info.row + ", " + g1Info.column + ") of board " + g1Info.boardID + " with (" + g2Info.row + ", " + g2Info.column + ") of board " + g2Info.boardID);
 
         int g1R = g1Info.row;
         int g1C = g1Info.column;
