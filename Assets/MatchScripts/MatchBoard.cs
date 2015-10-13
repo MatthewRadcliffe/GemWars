@@ -1,8 +1,9 @@
 ﻿using UnityEngine;
+using UnityEngine.Networking;
 using System.Collections;
 using System.Collections.Generic;
 
-public class MatchBoard : MonoBehaviour {
+public class MatchBoard : NetworkBehaviour {
     public int GridWidth, GridHeight;
     public int startingX, startingY;
     public int ID;
@@ -13,9 +14,16 @@ public class MatchBoard : MonoBehaviour {
     private GameObject backupG1;
     private GameObject backupG2;
 
-    void Awake() {
+    [Command]
+    public void CmdSetupBoard()
+    {
         CreateGrid();
     }
+
+    //public override void OnStartServer()
+    //{
+    //    CreateGrid();
+    //}
 
     private void CreateGrid() {
         grid = new GameObject[GridWidth, GridHeight];
@@ -31,10 +39,15 @@ public class MatchBoard : MonoBehaviour {
         int randomTile = Random.Range(0, TilePrefabs.Length);
         GameObject newTile = (GameObject)Instantiate(TilePrefabs[randomTile], new Vector2(startingX + x, startingY + y), Quaternion.identity);
         newTile.GetComponent<TileInfo>().assign(ID, randomTile, x, y);
+        NetworkServer.Spawn(newTile);
         return newTile;
     }
 
-    public void swap(GameObject g1, GameObject g2) {
+    [Command]
+    public void CmdSwap(GameObject g1, GameObject g2) {
+        if (!isServer)
+            return;
+
         backupG1 = g1;
         backupG2 = g2;
 
@@ -60,7 +73,7 @@ public class MatchBoard : MonoBehaviour {
             throw new System.Exception("Null backup");
         }
 
-        swap(backupG1, backupG2);
+        CmdSwap(backupG1, backupG2);
     }
 
     public IEnumerable<GameObject> checkMatchesHorizontal(GameObject obj) {
@@ -130,7 +143,7 @@ public class MatchBoard : MonoBehaviour {
         return matches;
     }
 
-    public IEnumerable<GameObject> checkMatches(GameObject obj) {
+    public IEnumerable<GameObject> CheckMatches(GameObject obj) {
         List<GameObject> horizontal = (List<GameObject>)checkMatchesHorizontal(obj);
         List<GameObject> vertical = (List<GameObject>)checkMatchesVertical(obj);
         horizontal.AddRange(vertical);
@@ -144,7 +157,8 @@ public class MatchBoard : MonoBehaviour {
         }
     }
 
-    public void remove(GameObject obj) {
+    [Command]
+    public void CmdRemove(GameObject obj) {
         TileInfo info = obj.GetComponent<TileInfo>();
         grid[info.row, info.column] = makeRandom(info.row, info.column);
         Destroy(obj);

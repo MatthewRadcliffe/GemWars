@@ -1,7 +1,8 @@
 ﻿using UnityEngine;
+using UnityEngine.Networking;
 using System.Collections;
 
-public class TileInfo : MonoBehaviour {
+public class TileInfo : NetworkBehaviour {
     public int column { get; set; }
     public int row { get; set; }
     public int type { get; set; }

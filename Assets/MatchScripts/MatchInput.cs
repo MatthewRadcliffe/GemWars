@@ -1,18 +1,40 @@
 ﻿using UnityEngine;
+using UnityEngine.Networking;
 using System.Collections;
 using System.Collections.Generic;
 
-public class MatchInput : MonoBehaviour {
+public class MatchInput : NetworkBehaviour {
 
     public MatchBoard board;
     public LayerMask tileLayer;
     private GameObject currentlySelected;
-    
-	void Awake() {
-        board = this.GetComponent<MatchBoard>();
-	}
-	
-	void Update() {
+    private string myBoard;
+    //private bool boardCreated;
+
+    public override void OnStartLocalPlayer()
+    {
+        print("im Starting up");
+        board = null;
+        //boardCreated = false;
+
+        if (isServer)
+            myBoard = "PlayerOneBoard";
+        else
+            myBoard = "PlayerTwoBoard";
+
+        board = this.gameObject.GetComponent<MatchBoard>();
+        if(myBoard.Equals("PlayerOneBoard"))
+        {
+            board.startingX = -8;
+        }
+
+        board.CmdSetupBoard();
+    }
+
+    void Update() {
+        if (!isLocalPlayer)
+            return;
+
         if (Input.GetKeyDown(KeyCode.Mouse0)) {
             if(currentlySelected == null) {
                 selectTile();
@@ -42,10 +64,10 @@ public class MatchInput : MonoBehaviour {
         RaycastHit2D hit = tileHit();
         if(hit) {
             if(checkAdjacent(hit.collider.gameObject)) {
-                board.swap(currentlySelected, hit.collider.gameObject);
-                List<GameObject> temp = (List<GameObject>)board.checkMatches(currentlySelected);
+                board.CmdSwap(currentlySelected, hit.collider.gameObject);
+                List<GameObject> temp = (List<GameObject>)board.CheckMatches(currentlySelected);
                 remove(temp);
-                temp = (List<GameObject>)board.checkMatches(hit.collider.gameObject);
+                temp = (List<GameObject>)board.CheckMatches(hit.collider.gameObject);
                 remove(temp);
             }
         }
@@ -54,7 +76,7 @@ public class MatchInput : MonoBehaviour {
 
     private void remove(IEnumerable<GameObject> list) {
         foreach (GameObject obj in list) {
-            board.remove(obj);
+            board.CmdRemove(obj);
         }
     }
 
