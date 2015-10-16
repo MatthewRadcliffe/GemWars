@@ -15,56 +15,12 @@ Loading E:\School\GemWars\GemWars_Data\Managed\UnityEngine.UI.dll into Unity Chi
 Platform assembly: E:\School\GemWars\GemWars_Data\Managed\UnityEngine.Networking.dll (this message is harmless)
 Loading E:\School\GemWars\GemWars_Data\Managed\UnityEngine.Networking.dll into Unity Child Domain
 Platform assembly: E:\School\GemWars\GemWars_Data\Managed\System.Core.dll (this message is harmless)
-- Completed reload, in  0.096 seconds
+- Completed reload, in  0.102 seconds
 desktop: 1920x1080 60Hz; virtual: 1920x1080 at 0,0
 <RI> Initializing input.
 <RI> Input initialized.
 <RI> Initialized touch support.
 Platform assembly: E:\School\GemWars\GemWars_Data\Managed\System.dll (this message is harmless)
 Setting up 2 worker threads for Enlighten.
-  Thread -> id: 754 -> priority: 1 
-  Thread -> id: 2774 -> priority: 1 
-im Starting up
- 
-(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 64)
-
-NullReferenceException: Object reference not set to an instance of an object
-  at MatchBoard.checkMatchesHorizontal (UnityEngine.GameObject obj) [0x00000] in <filename unknown>:0 
-  at MatchBoard.CheckMatches (UnityEngine.GameObject obj) [0x00000] in <filename unknown>:0 
-  at MatchInput.swap () [0x00000] in <filename unknown>:0 
-  at MatchInput.Update () [0x00000] in <filename unknown>:0 
- 
-(Filename:  Line: -1)
-
-NullReferenceException: Object reference not set to an instance of an object
-  at MatchBoard.checkMatchesHorizontal (UnityEngine.GameObject obj) [0x00000] in <filename unknown>:0 
-  at MatchBoard.CheckMatches (UnityEngine.GameObject obj) [0x00000] in <filename unknown>:0 
-  at MatchInput.swap () [0x00000] in <filename unknown>:0 
-  at MatchInput.Update () [0x00000] in <filename unknown>:0 
- 
-(Filename:  Line: -1)
-
-NullReferenceException: Object reference not set to an instance of an object
-  at MatchBoard.checkMatchesHorizontal (UnityEngine.GameObject obj) [0x00000] in <filename unknown>:0 
-  at MatchBoard.CheckMatches (UnityEngine.GameObject obj) [0x00000] in <filename unknown>:0 
-  at MatchInput.swap () [0x00000] in <filename unknown>:0 
-  at MatchInput.Update () [0x00000] in <filename unknown>:0 
- 
-(Filename:  Line: -1)
-
-NullReferenceException: Object reference not set to an instance of an object
-  at MatchBoard.checkMatchesHorizontal (UnityEngine.GameObject obj) [0x00000] in <filename unknown>:0 
-  at MatchBoard.CheckMatches (UnityEngine.GameObject obj) [0x00000] in <filename unknown>:0 
-  at MatchInput.swap () [0x00000] in <filename unknown>:0 
-  at MatchInput.Update () [0x00000] in <filename unknown>:0 
- 
-(Filename:  Line: -1)
-
-NullReferenceException: Object reference not set to an instance of an object
-  at MatchBoard.checkMatchesHorizontal (UnityEngine.GameObject obj) [0x00000] in <filename unknown>:0 
-  at MatchBoard.CheckMatches (UnityEngine.GameObject obj) [0x00000] in <filename unknown>:0 
-  at MatchInput.swap () [0x00000] in <filename unknown>:0 
-  at MatchInput.Update () [0x00000] in <filename unknown>:0 
- 
-(Filename:  Line: -1)
-
+  Thread -> id: 26f8 -> priority: 1 
+  Thread -> id: 23d0 -> priority: 1 
