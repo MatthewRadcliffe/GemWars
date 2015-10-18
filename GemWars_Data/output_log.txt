@@ -15,12 +15,17 @@ Loading E:\School\GemWars\GemWars_Data\Managed\UnityEngine.UI.dll into Unity Chi
 Platform assembly: E:\School\GemWars\GemWars_Data\Managed\UnityEngine.Networking.dll (this message is harmless)
 Loading E:\School\GemWars\GemWars_Data\Managed\UnityEngine.Networking.dll into Unity Child Domain
 Platform assembly: E:\School\GemWars\GemWars_Data\Managed\System.Core.dll (this message is harmless)
-- Completed reload, in  0.102 seconds
+- Completed reload, in  0.098 seconds
 desktop: 1920x1080 60Hz; virtual: 1920x1080 at 0,0
 <RI> Initializing input.
 <RI> Input initialized.
 <RI> Initialized touch support.
 Platform assembly: E:\School\GemWars\GemWars_Data\Managed\System.dll (this message is harmless)
 Setting up 2 worker threads for Enlighten.
-  Thread -> id: 26f8 -> priority: 1 
-  Thread -> id: 23d0 -> priority: 1 
+  Thread -> id: 1418 -> priority: 1 
+  Thread -> id: 38b0 -> priority: 1 
+Log: connection {1} has been disconnected by timeout; address {::ffff:127.0.0.1:61836}
+aissp: time {21612} lastRecTime {19560} DisTme {2000}, rtt {0} 
+ 
+(Filename:  Line: 1848)
+

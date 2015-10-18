@@ -15,8 +15,9 @@ public class TestBuy : NetworkBehaviour {
 
     public void buy()
     {
-        OnStartLocalPlayer();
-        myBuyer.spendResource(Player.ResourceType.Yellow, 10);
+        if(myBuyer == null)
+            OnStartLocalPlayer();
+        myBuyer.Cmd_spendResource(ResourceType.Yellow, 10);
     }
 
 }

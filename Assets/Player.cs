@@ -4,37 +4,40 @@ using System.Collections;
 using UnityEngine.UI;
 
 public class Player : NetworkBehaviour {
-
-    public enum ResourceType
-    {
-        Red,
-        Blue,
-        Green,
-        Yellow,
-        Purple
-    }
-
+    [SyncVar]
     private int yellow = 0;
+    [SyncVar]
     private int red = 0;
+    [SyncVar]
     private int green = 0;
+    [SyncVar]
     private int blue = 0;
+    [SyncVar]
     private int purple = 0;
-    private GameObject resourcePanel;
+    private GameObject myResourcePanel;
+    private GameObject opponentsResourcePanel;
+    private GameObject opponent;
 
-    public override void OnStartLocalPlayer()
+    public void Start()
     {
-        resourcePanel = GameObject.Find("PlayersGems");
-        updateResources();
+        if(isLocalPlayer)
+        {
+            myResourcePanel = GameObject.Find("PlayersGems");
+            opponentsResourcePanel = GameObject.Find("OpponentsGems");
+        }
     }
 
-    // Update is called once per frame
-    void Update () {
-	
+    public void FixedUpdate ()
+    {
+        updateResources();
 	}
 
-
-    public void gainResource(ResourceType resource, int amount)
+    [Command]
+    public void Cmd_gainResource(ResourceType resource, int amount)
     {
+        if (!isServer)
+            return;
+
         switch (resource)
         {
             case ResourceType.Yellow:
@@ -53,11 +56,14 @@ public class Player : NetworkBehaviour {
                 purple += amount;
                 break;
         }
-        updateResources();
     }
 
-    public void spendResource(ResourceType resource, int amount)
+    [Command]
+    public void Cmd_spendResource(ResourceType resource, int amount)
     {
+        if (!isServer)
+            return;
+
         switch (resource)
         {
             case ResourceType.Yellow:
@@ -76,15 +82,32 @@ public class Player : NetworkBehaviour {
                 purple -= amount;
                 break;
         }
-        updateResources();
     }
 
     public void updateResources()
     {
-        resourcePanel.transform.FindChild("YellowGem").transform.FindChild("GemCount").GetComponent<Text>().text = "x " + yellow;
-        resourcePanel.transform.FindChild("RedGem").transform.FindChild("GemCount").GetComponent<Text>().text = "x " + red;
-        resourcePanel.transform.FindChild("GreenGem").transform.FindChild("GemCount").GetComponent<Text>().text = "x " + green;
-        resourcePanel.transform.FindChild("BlueGem").transform.FindChild("GemCount").GetComponent<Text>().text = "x " + blue;
-        resourcePanel.transform.FindChild("PurpleGem").transform.FindChild("GemCount").GetComponent<Text>().text = "x " + purple;
+        if (!isLocalPlayer)
+            return;
+
+        myResourcePanel.transform.FindChild("YellowGem").transform.FindChild("GemCount").GetComponent<Text>().text = "x " + yellow;
+        myResourcePanel.transform.FindChild("RedGem").transform.FindChild("GemCount").GetComponent<Text>().text = "x " + red;
+        myResourcePanel.transform.FindChild("GreenGem").transform.FindChild("GemCount").GetComponent<Text>().text = "x " + green;
+        myResourcePanel.transform.FindChild("BlueGem").transform.FindChild("GemCount").GetComponent<Text>().text = "x " + blue;
+        myResourcePanel.transform.FindChild("PurpleGem").transform.FindChild("GemCount").GetComponent<Text>().text = "x " + purple;
+
+        if (opponent == null) {
+            GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
+            foreach (GameObject go in players)
+                if (!go.GetComponent<Player>().isLocalPlayer)
+                    opponent = go;
+            return;
+        }
+
+        opponentsResourcePanel.transform.FindChild("YellowGem").transform.FindChild("GemCount").GetComponent<Text>().text = "x " + opponent.GetComponent<Player>().yellow;
+        opponentsResourcePanel.transform.FindChild("RedGem").transform.FindChild("GemCount").GetComponent<Text>().text = "x " + opponent.GetComponent<Player>().red;
+        opponentsResourcePanel.transform.FindChild("GreenGem").transform.FindChild("GemCount").GetComponent<Text>().text = "x " + opponent.GetComponent<Player>().green;
+        opponentsResourcePanel.transform.FindChild("BlueGem").transform.FindChild("GemCount").GetComponent<Text>().text = "x " + opponent.GetComponent<Player>().blue;
+        opponentsResourcePanel.transform.FindChild("PurpleGem").transform.FindChild("GemCount").GetComponent<Text>().text = "x " + opponent.GetComponent<Player>().purple;
+
     }
 }
