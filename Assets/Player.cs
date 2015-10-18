@@ -14,23 +14,61 @@ public class Player : NetworkBehaviour {
     private int blue = 0;
     [SyncVar]
     private int purple = 0;
+    [SyncVar]
+    public float health = 100;
+
+    private GameObject myHealthBar;
     private GameObject myResourcePanel;
-    private GameObject opponentsResourcePanel;
     private GameObject opponent;
+    private GameObject opponentsHealthBar;
+    private GameObject opponentsResourcePanel;
 
     public void Start()
     {
-        if(isLocalPlayer)
-        {
+        if(isLocalPlayer) {
             myResourcePanel = GameObject.Find("PlayersGems");
             opponentsResourcePanel = GameObject.Find("OpponentsGems");
+
+            if(isServer) {
+                myHealthBar = GameObject.Find("Player1HealthBar");
+                opponentsHealthBar = GameObject.Find("Player2HealthBar");
+            }
+            else {
+                myHealthBar = GameObject.Find("Player1HealthBar");
+                opponentsHealthBar = GameObject.Find("Player2HealthBar");
+            }
         }
     }
 
     public void FixedUpdate ()
     {
-        updateResources();
+        if (!isLocalPlayer)
+            return;
+
+        updateUI();
 	}
+
+    [Command]
+    public void Cmd_gainHealth(float amount)
+    {
+        if (!isServer)
+            return;
+
+        health += amount;
+        if (health > 100)
+            health = 100;
+    }
+
+    [Command]
+    public void Cmd_loseHealth(float amount)
+    {
+        if (!isServer)
+            return;
+
+        health -= amount;
+        if (health < 0)
+            health = 0;
+    }
 
     [Command]
     public void Cmd_gainResource(ResourceType resource, int amount)
@@ -84,11 +122,10 @@ public class Player : NetworkBehaviour {
         }
     }
 
-    public void updateResources()
+    public void updateUI()
     {
-        if (!isLocalPlayer)
-            return;
-
+        myHealthBar.transform.FindChild("Health").GetComponent<Image>().fillAmount = health / 100f;
+        myHealthBar.transform.FindChild("Health").transform.FindChild("Amount").GetComponent<Text>().text = health + " / 100";
         myResourcePanel.transform.FindChild("YellowGem").transform.FindChild("GemCount").GetComponent<Text>().text = "x " + yellow;
         myResourcePanel.transform.FindChild("RedGem").transform.FindChild("GemCount").GetComponent<Text>().text = "x " + red;
         myResourcePanel.transform.FindChild("GreenGem").transform.FindChild("GemCount").GetComponent<Text>().text = "x " + green;
@@ -103,6 +140,8 @@ public class Player : NetworkBehaviour {
             return;
         }
 
+        opponentsHealthBar.transform.FindChild("Health").GetComponent<Image>().fillAmount = (opponent.GetComponent<Player>().health / 100);
+        opponentsHealthBar.transform.FindChild("Health").transform.FindChild("Amount").GetComponent<Text>().text = opponent.GetComponent<Player>().health + " / 100";
         opponentsResourcePanel.transform.FindChild("YellowGem").transform.FindChild("GemCount").GetComponent<Text>().text = "x " + opponent.GetComponent<Player>().yellow;
         opponentsResourcePanel.transform.FindChild("RedGem").transform.FindChild("GemCount").GetComponent<Text>().text = "x " + opponent.GetComponent<Player>().red;
         opponentsResourcePanel.transform.FindChild("GreenGem").transform.FindChild("GemCount").GetComponent<Text>().text = "x " + opponent.GetComponent<Player>().green;
