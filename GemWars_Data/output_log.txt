@@ -15,12 +15,20 @@ Loading E:\School\GemWars\GemWars_Data\Managed\UnityEngine.UI.dll into Unity Chi
 Platform assembly: E:\School\GemWars\GemWars_Data\Managed\UnityEngine.Networking.dll (this message is harmless)
 Loading E:\School\GemWars\GemWars_Data\Managed\UnityEngine.Networking.dll into Unity Child Domain
 Platform assembly: E:\School\GemWars\GemWars_Data\Managed\System.Core.dll (this message is harmless)
-- Completed reload, in  0.098 seconds
+- Completed reload, in  0.232 seconds
 desktop: 1920x1080 60Hz; virtual: 1920x1080 at 0,0
 <RI> Initializing input.
 <RI> Input initialized.
 <RI> Initialized touch support.
 Platform assembly: E:\School\GemWars\GemWars_Data\Managed\System.dll (this message is harmless)
 Setting up 2 worker threads for Enlighten.
-  Thread -> id: 3534 -> priority: 1 
-  Thread -> id: 3334 -> priority: 1 
+  Thread -> id: 388c -> priority: 1 
+  Thread -> id: 4210 -> priority: 1 
+SpawnObject for FastUnit(Clone) (UnityEngine.GameObject), NetworkServer is not active. Cannot spawn objects without an active server.
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 64)
+
+SpawnObject for StrongUnit(Clone) (UnityEngine.GameObject), NetworkServer is not active. Cannot spawn objects without an active server.
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 64)
+

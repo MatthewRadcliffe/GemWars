@@ -9,22 +9,23 @@ public class ButtonManager : NetworkBehaviour {
     public GameObject unitPanel; 
     public GameObject upgradePanel;
     private Player myPlayer;
-
-    public void Start()
-    {
-
-    }
+    private float startingX;
+    private float startingY;
 
     public void FixedUpdate()
     {
         if (myPlayer == null)
             findMyPlayer();
 
+        if (myPlayer == null)
+            return;
+
         for (int i = 0; i < units.Length; i++)
         {
             if(units[i] != null)
             {
                 upgradePanel.transform.FindChild("UnitUpgrade" + (i + 1)).transform.FindChild("ResourceCost").transform.FindChild("Cost").GetComponent<Text>().text = "x " + units[i].GetComponent<UnitBase>().upgradeCost;
+                unitPanel.transform.FindChild("UnitBuy" + (i + 1)).transform.FindChild("UnitLevelLabel").GetComponent<Text>().text = "Lvl " + units[i].GetComponent<UnitBase>().level;
                 if (myPlayer.yellow < units[i].GetComponent<UnitBase>().upgradeCost)
                     upgradePanel.transform.FindChild("UnitUpgrade" + (i + 1)).GetComponent<Button>().interactable = false;
                 else
@@ -50,6 +51,7 @@ public class ButtonManager : NetworkBehaviour {
         if(myPlayer == null)
             findMyPlayer();
 
+        units[unit].GetComponent<UnitBase>().upgrade();
         myPlayer.Cmd_spendResource(ResourceType.Yellow, units[unit].GetComponent<UnitBase>().upgradeCost);
     }
 
@@ -57,6 +59,10 @@ public class ButtonManager : NetworkBehaviour {
     {
         if (myPlayer == null)
             findMyPlayer();
+
+        GameObject newUnit = (GameObject)Instantiate(units[unit], new Vector2(startingX, startingY - .2f), Quaternion.identity);
+        newUnit.GetComponent<UnitBase>().controller = myPlayer;
+        NetworkServer.Spawn(newUnit);
 
         myPlayer.Cmd_spendResource(ResourceType.Yellow, units[unit].GetComponent<UnitBase>().yellow);
         myPlayer.Cmd_spendResource(ResourceType.Red, units[unit].GetComponent<UnitBase>().red);
@@ -71,6 +77,16 @@ public class ButtonManager : NetworkBehaviour {
         foreach (GameObject go in playerHolder)
             if (go.GetComponent<Player>().isLocalPlayer)
                 myPlayer = go.GetComponent<Player>();
+
+        if(isServer)
+        {
+            startingX = GameObject.Find("Player1Base").transform.position.x;
+            startingY = GameObject.Find("Player1Base").transform.position.y;
+        }
+        else {
+            startingX = GameObject.Find("Player2Base").transform.position.x;
+            startingY = GameObject.Find("Player2Base").transform.position.y;
+        }
     }
 
 }

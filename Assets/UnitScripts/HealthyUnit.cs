@@ -5,6 +5,7 @@ public class HealthyUnit : UnitBase
 {
     public override void upgrade()
     {
-        base.upgrade();
+        //base.upgrade();
+        //upgradeCost++;
     }
 }

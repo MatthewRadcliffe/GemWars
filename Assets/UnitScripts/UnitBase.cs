@@ -16,9 +16,9 @@ public class UnitBase : NetworkBehaviour {
     public int purple;
     public int upgradeCost;
 
-    public void spawnMinion(Player p)
+    public void Update()
     {
-        
+
     }
 
     public virtual void upgrade()

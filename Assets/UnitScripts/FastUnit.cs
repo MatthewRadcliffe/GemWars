@@ -6,7 +6,7 @@ using System;
 public class FastUnit : UnitBase { 
     public override void upgrade()
     {
-        base.upgrade();
-        upgradeCost++;
+        //base.upgrade();
+        //upgradeCost++;
     }
 }

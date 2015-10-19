@@ -5,6 +5,7 @@ public class StrongUnit : UnitBase
 {
     public override void upgrade()
     {
-        base.upgrade();
+        //base.upgrade();
+        //upgradeCost++;
     }
 }
