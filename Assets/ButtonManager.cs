@@ -8,6 +8,7 @@ public class ButtonManager : NetworkBehaviour {
     public GameObject[] units;
     public GameObject unitPanel; 
     public GameObject upgradePanel;
+    public UnitFactory factory;
     private Player myPlayer;
     private float startingX;
     private float startingY;
@@ -57,12 +58,14 @@ public class ButtonManager : NetworkBehaviour {
 
     public void purchaseUnit(int unit)
     {
-        if (myPlayer == null)
+        if (myPlayer == null) {
             findMyPlayer();
+        }
 
         GameObject newUnit = (GameObject)Instantiate(units[unit], new Vector2(startingX, startingY - .2f), Quaternion.identity);
         newUnit.GetComponent<UnitBase>().controller = myPlayer;
         NetworkServer.Spawn(newUnit);
+        factory.spawnUnit(newUnit);
 
         myPlayer.Cmd_spendResource(ResourceType.Yellow, units[unit].GetComponent<UnitBase>().yellow);
         myPlayer.Cmd_spendResource(ResourceType.Red, units[unit].GetComponent<UnitBase>().red);

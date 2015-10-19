@@ -1,53 +1,28 @@
 ﻿using UnityEngine;
-using UnityEngine.Networking;
 using System.Collections;
 using System.Collections.Generic;
+using System;
 
-public class MatchBoard : NetworkBehaviour {
-    public int GridWidth, GridHeight;
-    public int startingX, startingY;
-    public int ID;
-    public GameObject[,] grid;
-
-    public GameObject[] TilePrefabs;
-
+public class MatchBoard : MonoBehaviour {
+    private GameObject[,] grid = new GameObject[Constants.rows, Constants.columns];
+    
     private GameObject backupG1;
     private GameObject backupG2;
 
-    [Command]
-    public void CmdSetupBoard()
-    {
-        CreateGrid();
-    }
-
-    //public override void OnStartServer()
-    //{
-    //    CreateGrid();
-    //}
-
-    private void CreateGrid() {
-        grid = new GameObject[GridWidth, GridHeight];
-
-        for (int x = 0; x < GridWidth; x++) {
-            for (int y = 0; y < GridHeight; y++) {
-                grid[x, y] = makeRandom(x, y);
+    public GameObject this[int row, int column] {
+        get {
+            try {
+                return grid[row, column];
+            } catch (Exception e) {
+                throw;
             }
         }
+        set {
+            grid[row, column] = value;
+        }
     }
-
-    private GameObject makeRandom(int x, int y) {
-        int randomTile = Random.Range(0, TilePrefabs.Length);
-        GameObject newTile = (GameObject)Instantiate(TilePrefabs[randomTile], new Vector2(startingX + x, startingY + y), Quaternion.identity);
-        newTile.GetComponent<TileInfo>().assign(ID, randomTile, x, y);
-        NetworkServer.Spawn(newTile);
-        return newTile;
-    }
-
-    [Command]
-    public void CmdSwap(GameObject g1, GameObject g2) {
-        if (!isServer)
-            return;
-
+ 
+    public void swap(GameObject g1, GameObject g2) {
         backupG1 = g1;
         backupG2 = g2;
 
@@ -73,7 +48,7 @@ public class MatchBoard : NetworkBehaviour {
             throw new System.Exception("Null backup");
         }
 
-        CmdSwap(backupG1, backupG2);
+        swap(backupG1, backupG2);
     }
 
     public IEnumerable<GameObject> checkMatchesHorizontal(GameObject obj) {
@@ -91,8 +66,8 @@ public class MatchBoard : NetworkBehaviour {
             }
         }
 
-        if (info.column != GridWidth - 1) {
-            for (int c = info.column + 1; c < GridWidth; c++) {
+        if (info.column != Constants.rows - 1) {
+            for (int c = info.column + 1; c < Constants.columns; c++) {
                 if (grid[info.row, c].GetComponent<TileInfo>().areSame(info)) {
                     matches.Add(grid[info.row, c]);
                 }
@@ -125,8 +100,8 @@ public class MatchBoard : NetworkBehaviour {
             }
         }
 
-        if (info.row != GridHeight - 1) {
-            for (int r = info.row + 1; r < GridHeight; r++) {
+        if (info.row != Constants.rows - 1) {
+            for (int r = info.row + 1; r < Constants.columns; r++) {
                 if(grid[r, info.column] != null && grid[r, info.column].GetComponent<TileInfo>().areSame(info)) {
                     matches.Add(grid[r, info.column]);
                 }
@@ -143,24 +118,71 @@ public class MatchBoard : NetworkBehaviour {
         return matches;
     }
 
-    public IEnumerable<GameObject> CheckMatches(GameObject obj) {
+    public MatchInfo checkMatches(GameObject obj) {
+        MatchInfo info = new MatchInfo();
         List<GameObject> horizontal = (List<GameObject>)checkMatchesHorizontal(obj);
+        info.addRange(horizontal);
         List<GameObject> vertical = (List<GameObject>)checkMatchesVertical(obj);
-        horizontal.AddRange(vertical);
-        return horizontal;
+        info.addRange(vertical);
+        return info;
     }
 
-    public void checkMatches(IEnumerable<GameObject> objects) {
+    public IEnumerable<GameObject> checkMatches(IEnumerable<GameObject> objects) {
         List<GameObject> matches = new List<GameObject>();
         foreach(GameObject obj in objects) {
-            //matches.AddRange(checkMatches(obj))
+            matches.AddRange(checkMatches(obj).matchedTiles);
         }
+        return matches;
+    }
+    
+    public void remove(GameObject obj) {
+        TileInfo info = obj.GetComponent<TileInfo>();
+        grid[info.row, info.column] = null;
+        Destroy(obj);
     }
 
-    [Command]
-    public void CmdRemove(GameObject obj) {
-        TileInfo info = obj.GetComponent<TileInfo>();
-        grid[info.row, info.column] = makeRandom(info.row, info.column);
-        Destroy(obj);
+    public CollapseTiles Collapse(IEnumerable<int> columns) {
+        CollapseTiles collapseInfo = new CollapseTiles();
+        
+        ///search in every column
+        foreach (var column in columns) {
+            //begin from bottom row
+            for (int row = 0; row < Constants.rows - 1; row++) {
+                //if you find a null item
+                if (grid[row, column] == null) {
+                    //start searching for the first non-null
+                    for (int row2 = row + 1; row2 < Constants.rows; row2++) {
+                        //if you find one, bring it down (i.e. replace it with the null you found)
+                        if (grid[row2, column] != null) {
+                            grid[row, column] = grid[row2, column];
+                            grid[row2, column] = null;
+
+                            //calculate the biggest distance
+                            if (row2 - row > collapseInfo.maxDistance)
+                                collapseInfo.maxDistance = row2 - row;
+
+                            //assign new row and column (name does not change)
+                            grid[row, column].GetComponent<TileInfo>().row = row;
+                            grid[row, column].GetComponent<TileInfo>().column = column;
+
+                            collapseInfo.addTile(grid[row, column]);
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+
+        return collapseInfo;
+    }
+
+    public IEnumerable<TileInfo> GetAllEmptyInColumn(int column) {
+        List<TileInfo> emptyTiles = new List<TileInfo>();
+        for(int r = 0; r < Constants.rows; r++) {
+            if(grid[r, column] == null) {
+                emptyTiles.Add(new TileInfo() { row = r, column = column });
+            }
+        }
+        return emptyTiles;
     }
 }
