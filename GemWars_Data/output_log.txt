@@ -15,12 +15,12 @@ Loading E:\School\GemWars\GemWars_Data\Managed\UnityEngine.UI.dll into Unity Chi
 Platform assembly: E:\School\GemWars\GemWars_Data\Managed\UnityEngine.Networking.dll (this message is harmless)
 Loading E:\School\GemWars\GemWars_Data\Managed\UnityEngine.Networking.dll into Unity Child Domain
 Platform assembly: E:\School\GemWars\GemWars_Data\Managed\System.Core.dll (this message is harmless)
-- Completed reload, in  0.051 seconds
+- Completed reload, in  0.098 seconds
 desktop: 1920x1080 60Hz; virtual: 1920x1080 at 0,0
 <RI> Initializing input.
 <RI> Input initialized.
 <RI> Initialized touch support.
 Platform assembly: E:\School\GemWars\GemWars_Data\Managed\System.dll (this message is harmless)
 Setting up 2 worker threads for Enlighten.
-  Thread -> id: 1ea4 -> priority: 1 
-  Thread -> id: 3578 -> priority: 1 
+  Thread -> id: 3534 -> priority: 1 
+  Thread -> id: 3334 -> priority: 1 
