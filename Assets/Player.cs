@@ -17,11 +17,13 @@ public class Player : NetworkBehaviour {
     [SyncVar]
     public float health = 100;
 
+    public int playerNum;
     private GameObject myHealthBar;
     private GameObject myResourcePanel;
     private GameObject opponent;
     private GameObject opponentsHealthBar;
     private GameObject opponentsResourcePanel;
+    private UnitFactory factory;
 
     public void Start()
     {
@@ -32,21 +34,35 @@ public class Player : NetworkBehaviour {
             if(isServer) {
                 myHealthBar = GameObject.Find("Player1HealthBar");
                 opponentsHealthBar = GameObject.Find("Player2HealthBar");
+                playerNum = 1;
             }
             else {
-                myHealthBar = GameObject.Find("Player1HealthBar");
-                opponentsHealthBar = GameObject.Find("Player2HealthBar");
+                myHealthBar = GameObject.Find("Player2HealthBar");
+                opponentsHealthBar = GameObject.Find("Player1HealthBar");
+                playerNum = 2;
             }
         }
     }
 
     public void FixedUpdate ()
     {
+        if (factory == null)
+            factory = GameObject.Find("GameManager").GetComponent<UnitFactory>();
+
         if (!isLocalPlayer)
             return;
 
         updateUI();
 	}
+
+    [Command]
+    public void Cmd_spawnUnit(string unit, float x, float y)
+    {
+        GameObject newUnit = (GameObject)Instantiate(Resources.Load(unit), new Vector2(x, y), Quaternion.identity);
+        //newUnit.GetComponent<UnitBase>().controller = this;
+        NetworkServer.Spawn(newUnit);
+        factory.spawnUnit(newUnit, this);
+    }
 
     [Command]
     public void Cmd_gainHealth(float amount)
