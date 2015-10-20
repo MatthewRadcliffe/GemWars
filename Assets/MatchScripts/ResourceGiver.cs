@@ -2,21 +2,23 @@
 using System.Collections;
 using UnityEngine.Networking;
 
-public class ResourceGiver : NetworkBehaviour {
+public class ResourceGiver : MonoBehaviour {
 
     private Player player;
-	// Use this for initialization
-	void Start () {
+
+    public void findPlayer() {
         GameObject[] playerHolder = GameObject.FindGameObjectsWithTag("Player");
         foreach (GameObject go in playerHolder) {
             if (go.GetComponent<Player>().isLocalPlayer) {
                 player = go.GetComponent<Player>();
             }
         }
-
     }
 
     public void giveResource(ResourceType type, int amount) {
+        if (player == null) {
+            findPlayer();
+        }
         player.Cmd_gainResource(type, amount);
     }
 }
