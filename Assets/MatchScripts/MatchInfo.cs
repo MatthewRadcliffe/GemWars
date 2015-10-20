@@ -1,12 +1,13 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
+using System.Linq;
 
 public class MatchInfo {
     private List<GameObject> matches;
     
     public IEnumerable<GameObject> matchedTiles {
         get {
-            return matches;//.Distinct();
+            return matches.Distinct();
         }
     }
 

@@ -28,9 +28,7 @@ public class MatchBoard : MonoBehaviour {
 
         TileInfo g1Info = g1.GetComponent<TileInfo>();
         TileInfo g2Info = g2.GetComponent<TileInfo>();
-
-        //print("Swapping (" + g1Info.row + ", " + g1Info.column + ") of board " + g1Info.boardID + " with (" + g2Info.row + ", " + g2Info.column + ") of board " + g2Info.boardID);
-
+        
         int g1R = g1Info.row;
         int g1C = g1Info.column;
         int g2R = g2Info.row;

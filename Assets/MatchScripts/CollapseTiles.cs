@@ -1,15 +1,15 @@
 ﻿using UnityEngine;
-using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 
-public class CollapseTiles : MonoBehaviour {
+public class CollapseTiles {
     private List<GameObject> newTiles { get; set; }
     
     public int maxDistance { get; set; }
 
     public IEnumerable<GameObject> changedTiles {
         get {
-            return newTiles; //RETURN DISTINCT
+            return newTiles.Distinct();
         }
     }
 
