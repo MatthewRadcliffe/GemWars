@@ -5,15 +5,15 @@ using UnityEngine.UI;
 
 public class Player : NetworkBehaviour {
     [SyncVar]
-    public int yellow = 50;
+    public int yellow = 0;
     [SyncVar]
-    public int red = 50;
+    public int red = 0;
     [SyncVar]
-    public int green = 50;
+    public int green = 0;
     [SyncVar]
-    public int blue = 50;
+    public int blue = 0;
     [SyncVar]
-    public int purple = 50;
+    public int purple = 0;
     [SyncVar]
     public float health = 100;
 
