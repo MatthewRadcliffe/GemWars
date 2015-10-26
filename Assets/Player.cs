@@ -15,21 +15,19 @@ public class Player : NetworkBehaviour {
     [SyncVar]
     public int purple = 0;
     [SyncVar]
-    public float health = 100;
+    public float health = 1000;
 
     public int playerNum;
     private GameObject myHealthBar;
     private GameObject myResourcePanel;
     private GameObject opponent;
     private GameObject opponentsHealthBar;
-    private GameObject opponentsResourcePanel;
     private UnitFactory factory;
 
     public void Start()
     {
         if(isLocalPlayer) {
             myResourcePanel = GameObject.Find("PlayersGems");
-            opponentsResourcePanel = GameObject.Find("OpponentsGems");
 
             if(isServer) {
                 myHealthBar = GameObject.Find("Player1HealthBar");
@@ -141,7 +139,7 @@ public class Player : NetworkBehaviour {
     public void updateUI()
     {
         myHealthBar.transform.FindChild("Health").GetComponent<Image>().fillAmount = health / 100f;
-        myHealthBar.transform.FindChild("Health").transform.FindChild("Amount").GetComponent<Text>().text = health + " / 100";
+        myHealthBar.transform.FindChild("Health").transform.FindChild("Amount").GetComponent<Text>().text = health + " / 1000";
         myResourcePanel.transform.FindChild("YellowGem").transform.FindChild("GemCount").GetComponent<Text>().text = "x " + yellow;
         myResourcePanel.transform.FindChild("RedGem").transform.FindChild("GemCount").GetComponent<Text>().text = "x " + red;
         myResourcePanel.transform.FindChild("GreenGem").transform.FindChild("GemCount").GetComponent<Text>().text = "x " + green;
@@ -157,12 +155,7 @@ public class Player : NetworkBehaviour {
         }
 
         opponentsHealthBar.transform.FindChild("Health").GetComponent<Image>().fillAmount = (opponent.GetComponent<Player>().health / 100);
-        opponentsHealthBar.transform.FindChild("Health").transform.FindChild("Amount").GetComponent<Text>().text = opponent.GetComponent<Player>().health + " / 100";
-        opponentsResourcePanel.transform.FindChild("YellowGem").transform.FindChild("GemCount").GetComponent<Text>().text = "x " + opponent.GetComponent<Player>().yellow;
-        opponentsResourcePanel.transform.FindChild("RedGem").transform.FindChild("GemCount").GetComponent<Text>().text = "x " + opponent.GetComponent<Player>().red;
-        opponentsResourcePanel.transform.FindChild("GreenGem").transform.FindChild("GemCount").GetComponent<Text>().text = "x " + opponent.GetComponent<Player>().green;
-        opponentsResourcePanel.transform.FindChild("BlueGem").transform.FindChild("GemCount").GetComponent<Text>().text = "x " + opponent.GetComponent<Player>().blue;
-        opponentsResourcePanel.transform.FindChild("PurpleGem").transform.FindChild("GemCount").GetComponent<Text>().text = "x " + opponent.GetComponent<Player>().purple;
+        opponentsHealthBar.transform.FindChild("Health").transform.FindChild("Amount").GetComponent<Text>().text = opponent.GetComponent<Player>().health + " / 1000";
 
     }
 }

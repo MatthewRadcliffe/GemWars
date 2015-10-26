@@ -14,14 +14,34 @@ public class BoardManager : MonoBehaviour {
     private GameObject hitGo = null;
     private Vector2[] SpawnPositions;
     public GameObject[] TilePrefabs;
+
+    private bool gameStarted;
+    private bool boardInitialized;
     
     void Awake () {
+        gameStarted = false;
+        boardInitialized = false;
+
         InitializeTypes();
-        InitializeSpawn();
+        //InitializeSpawn();
         selectIndicator = GameObject.Find("SelectIndicator");
     }
 
     void Update() {
+
+        if(!gameStarted) {
+            if(GameObject.FindGameObjectsWithTag("Player").Length == 2) {
+                gameStarted = true;
+                GameObject.Find("WaitingPanel").SetActive(false);
+            }
+            return;
+        }
+
+        if(!boardInitialized) {
+            InitializeSpawn();
+            boardInitialized = true;
+        }
+
         if (state == GameState.Idle) {
             selectIndicator.transform.position = new Vector2(-500, 0);
             if (Input.GetMouseButtonDown(0)) {
