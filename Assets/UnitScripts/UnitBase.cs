@@ -72,7 +72,7 @@ public class UnitBase : NetworkBehaviour {
         }
     }
 
-    public void Update()
+    public virtual void Update()
     {
         if (collidingUnits.Count == 0)
             isColliding = false;
@@ -80,6 +80,8 @@ public class UnitBase : NetworkBehaviour {
             isColliding = true;
 
     }
+
+    public virtual void setStats() { }
 
     public virtual void upgrade()
     {

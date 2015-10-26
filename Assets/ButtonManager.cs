@@ -20,6 +20,9 @@ public class ButtonManager : NetworkBehaviour {
         if (myPlayer == null)
             return;
 
+        foreach (GameObject go in units)
+            go.GetComponent<UnitBase>().setStats();
+
         for (int i = 0; i < units.Length; i++)
         {
             if(units[i] != null)
@@ -61,7 +64,7 @@ public class ButtonManager : NetworkBehaviour {
             findMyPlayer();
         }
 
-        myPlayer.Cmd_spawnUnit(units[unit].transform.name, startingX, startingY - .2f);
+        myPlayer.Cmd_spawnUnit(units[unit].transform.name, units[unit].GetComponent<UnitBase>().level, startingX, startingY - .2f);
         myPlayer.Cmd_spendResource(ResourceType.Yellow, units[unit].GetComponent<UnitBase>().yellow);
         myPlayer.Cmd_spendResource(ResourceType.Red, units[unit].GetComponent<UnitBase>().red);
         myPlayer.Cmd_spendResource(ResourceType.Green, units[unit].GetComponent<UnitBase>().green);

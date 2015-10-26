@@ -32,7 +32,7 @@ public class BoardManager : MonoBehaviour {
         if(!gameStarted) {
             if(GameObject.FindGameObjectsWithTag("Player").Length == 2) {
                 gameStarted = true;
-                GameObject.Find("WaitingPanel").SetActive(false);
+                GameObject.Find("WaitingPanel").transform.position = new Vector3(1000, 0, 0);
             }
             return;
         }

@@ -4,9 +4,14 @@ using System.Collections;
 using System;
 
 public class FastUnit : UnitBase { 
-    public override void upgrade()
+
+    public override void setStats()
     {
-        //base.upgrade();
-        //upgradeCost++;
+        base.setStats();
+        this.health = 10 + (2 * level);
+        this.speed = 1.1f + (.15f * level);
+        this.power = 4 + (1.75f * level);
+        this.green = 7 + (1 * level);
+        this.upgradeCost = 3 + (1 * level);
     }
 }
