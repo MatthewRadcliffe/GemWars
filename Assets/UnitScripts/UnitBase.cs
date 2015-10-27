@@ -28,7 +28,6 @@ public class UnitBase : NetworkBehaviour {
 
     public void OnCollisionEnter2D(Collision2D coll)
     {
-        print("colliding");
         if (collidingUnits.Count != 0 && (collidingUnits[0].transform.name.Equals("Player1Base") || collidingUnits[0].transform.name.Equals("Player2Base")))
             collidingUnits.Insert(0, coll.gameObject);
         else

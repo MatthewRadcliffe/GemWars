@@ -1,72 +1,36 @@
 ﻿using UnityEngine;
+using UnityEngine.Networking;
 using System.Collections;
 using System.Linq;
 using System.Collections.Generic;
 
 public class BoardManager : MonoBehaviour {
-    public MatchBoard board;
-    private GameObject selectIndicator;
+    private MatchBoard board;
+    private PlayerInput input;
+    private ResourceGiver giver;
     
     public readonly Vector2 BottomRight = new Vector2(-3.00f, -3.90f);
     public readonly Vector2 TileSize = new Vector2(1.0f, 1.0f);
     
-    private GameState state = GameState.Idle;
-    private GameObject hitGo = null;
     private Vector2[] SpawnPositions;
-    public GameObject[] TilePrefabs;
-
-    private bool gameStarted;
-    private bool boardInitialized;
+    private GameObject[] TilePrefabs;
     
-    void Awake () {
-        gameStarted = false;
-        boardInitialized = false;
+    public void InitializeReferences(GameObject [] Prefabs, GameObject p1Indicator, GameObject p2Indicator) {
+        board = this.gameObject.AddComponent<MatchBoard>();
+        input = this.gameObject.AddComponent<PlayerInput>();
+        input.initIndicators(p1Indicator, p2Indicator);
+        giver = this.gameObject.AddComponent<ResourceGiver>();
 
+        TilePrefabs = Prefabs;
         InitializeTypes();
-        //InitializeSpawn();
-        selectIndicator = GameObject.Find("SelectIndicator");
+        InitializeSpawn();
     }
-
+    
     void Update() {
-
-        if(!gameStarted) {
-            if(GameObject.FindGameObjectsWithTag("Player").Length == 2) {
-                gameStarted = true;
-                GameObject.Find("WaitingPanel").transform.position = new Vector3(1000, 0, 0);
-            }
-            return;
-        }
-
-        if(!boardInitialized) {
-            InitializeSpawn();
-            boardInitialized = true;
-        }
-
-        if (state == GameState.Idle) {
-            selectIndicator.transform.position = new Vector2(-500, 0);
-            if (Input.GetMouseButtonDown(0)) {
-                var hit = Physics2D.Raycast(Camera.main.ScreenToWorldPoint(Input.mousePosition), Vector2.zero);
-                if (hit.collider != null) {
-                    hitGo = hit.collider.gameObject;
-                    state = GameState.SelectedTarget;
-                }
-            }
-        }
-        else if (state == GameState.SelectedTarget) {
-            if (Input.GetMouseButton(0)) {
-                selectIndicator.transform.position = hitGo.transform.position;
-                var hit = Physics2D.Raycast(Camera.main.ScreenToWorldPoint(Input.mousePosition), Vector2.zero);
-                if (hit.collider != null && hitGo != hit.collider.gameObject) {
-                    if (!Utilities.AreNeighbors(hitGo.GetComponent<TileInfo>(),
-                        hit.collider.gameObject.GetComponent<TileInfo>())) {
-                        state = GameState.Idle;
-                    } else {
-                        state = GameState.Animating;
-                        //FixSortingLayer(hitGo, hit.collider.gameObject);
-                        StartCoroutine(FindMatchesAndCollapse(hit));
-                    }
-                }
-            }
+        GameState state = input.commonUpdate();
+        if(state == GameState.Animating) {
+            FixSortingLayer(input.getInitial(), input.getTarget().collider.gameObject);
+            StartCoroutine(FindMatchesAndCollapse(input.getInitial(), input.getTarget(), input.currentPlayer()));
         }
     }
 
@@ -107,11 +71,9 @@ public class BoardManager : MonoBehaviour {
     }
 
     private void InstantiateAndPlace(int row, int column, GameObject newTile) {
-        GameObject go = Instantiate(newTile,
-            BottomRight + new Vector2(column * TileSize.x, row * TileSize.y), Quaternion.identity)
-            as GameObject;
-        
+        GameObject go = Instantiate(newTile,BottomRight + new Vector2(column * TileSize.x, row * TileSize.y), Quaternion.identity) as GameObject;
         go.GetComponent<TileInfo>().assign(newTile.GetComponent<TileInfo>().type, row, column);
+        NetworkServer.Spawn(go);
         go.SetActive(true);
         board[row, column] = go;
     }
@@ -123,21 +85,24 @@ public class BoardManager : MonoBehaviour {
         }
     }
 
-    private IEnumerator FindMatchesAndCollapse(RaycastHit2D hit2) {
-        var hitGo2 = hit2.collider.gameObject;
-        board.swap(hitGo, hitGo2);
+    private IEnumerator FindMatchesAndCollapse(GameObject t1, RaycastHit2D target, int playerNum) {
+        var t2 = target.collider.gameObject;
+        board.swap(t1, t2);
 
-        yield return new WaitForSeconds(Constants.AnimationDuration);
+        iTween.MoveTo(t1, t2.transform.position, Constants.MoveAnimationDuration);
+        iTween.MoveTo(t2, t1.transform.position, Constants.MoveAnimationDuration);
+        yield return new WaitForSeconds(Constants.MoveAnimationDuration);
 
-        var hitGomatchesInfo = board.checkMatches(hitGo);
-        var hitGo2matchesInfo = board.checkMatches(hitGo2);
-
-        var totalMatches = hitGomatchesInfo.matchedTiles.Union(hitGo2matchesInfo.matchedTiles).Distinct();
+        var matchesInfoT1 = board.checkMatches(t1);
+        var matchesInfoT2 = board.checkMatches(t2);
+        var totalMatches = matchesInfoT1.matchedTiles.Union(matchesInfoT2.matchedTiles).Distinct();
 
         //if user's swap didn't create at least a 3-match, undo their swap
         if (totalMatches.Count() < Constants.minMatches) {
             board.undoSwap();
-            yield return new WaitForSeconds(Constants.AnimationDuration);
+            iTween.MoveTo(t1, t2.transform.position, Constants.MoveAnimationDuration);
+            iTween.MoveTo(t2, t1.transform.position, Constants.MoveAnimationDuration);
+            yield return new WaitForSeconds(Constants.MoveAnimationDuration);
         }
         
         while (totalMatches.Count() >= Constants.minMatches) {
@@ -145,21 +110,16 @@ public class BoardManager : MonoBehaviour {
             if(totalMatches.Count() > Constants.minMatches) {
                 resourceAmount += (totalMatches.Count() - 3) * 2;
             }
-
-            this.GetComponent<ResourceGiver>().giveResource(hitGo.GetComponent<TileInfo>().type, resourceAmount);
+            
+            giver.giveResource(playerNum, totalMatches.ElementAt(0).GetComponent<TileInfo>().type, resourceAmount);
 
             foreach (var item in totalMatches) {
                 board.remove(item);
             }
-
-            //get the columns that we had a collapse
-            var columns = totalMatches.Select(go => go.GetComponent<TileInfo>().column).Distinct();
-
-            //the order the 2 methods below get called is important!!!
-            //collapse the ones gone
-            var collapsedTileInfo = board.Collapse(columns);
-            //create new ones
-            var newTileInfo = CreateNewTileInSpecificColumns(columns);
+            
+            var columns = totalMatches.Select(go => go.GetComponent<TileInfo>().column).Distinct(); //get the columns that we had a collapse
+            var collapsedTileInfo = board.Collapse(columns); //collapse the ones gone
+            var newTileInfo = CreateNewTileInSpecificColumns(columns); //create new ones
 
             int maxDistance = Mathf.Max(collapsedTileInfo.maxDistance, newTileInfo.maxDistance);
 
@@ -168,8 +128,9 @@ public class BoardManager : MonoBehaviour {
             
             //search if there are matches with the new/collapsed items
             totalMatches = board.checkMatches(collapsedTileInfo.changedTiles).Union(board.checkMatches(newTileInfo.changedTiles)).Distinct();
+            yield return new WaitForSeconds(Constants.ActionDelay);
         }
-        state = GameState.Idle;
+        input.reset();
     }
 
     private void FixSortingLayer(GameObject hitGo, GameObject hitGo2) {
@@ -192,10 +153,12 @@ public class BoardManager : MonoBehaviour {
 
                 newTile.GetComponent<TileInfo>().assign(go.GetComponent<TileInfo>().type, item.row, item.column);
 
-                if (Constants.rows - item.row > newTileInfo.maxDistance)
+                if (Constants.rows - item.row > newTileInfo.maxDistance) {
                     newTileInfo.maxDistance = Constants.rows - item.row;
+                }
 
                 board[item.row, item.column] = newTile;
+                NetworkServer.Spawn(newTile);
                 newTileInfo.addTile(newTile);
             }
         }
@@ -204,7 +167,9 @@ public class BoardManager : MonoBehaviour {
 
     private void MoveAndAnimate(IEnumerable<GameObject> movedGameObjects, int distance) {
         foreach (var item in movedGameObjects) {
-            item.transform.position = BottomRight + new Vector2(item.GetComponent<TileInfo>().column * TileSize.x, item.GetComponent<TileInfo>().row * TileSize.y);
+            Vector3 goal = BottomRight;
+            goal += new Vector3(item.GetComponent<TileInfo>().column * TileSize.x, item.GetComponent<TileInfo>().row * TileSize.y, 0);
+            iTween.MoveTo(item, goal, Constants.MoveAnimationDuration);
         }
     }
 

@@ -1,6 +1,5 @@
 ﻿using UnityEngine;
 using UnityEngine.Networking;
-using System.Collections;
 using UnityEngine.UI;
 
 public class Player : NetworkBehaviour {
@@ -51,23 +50,42 @@ public class Player : NetworkBehaviour {
             return;
 
         updateUI();
+        handleInput();
+        bool endGame = false;
         if(health <= 0)
         {
             GameObject.Find("WaitingPanel").transform.position = new Vector3();
             GameObject.Find("WaitingPanel").transform.FindChild("Text").GetComponent<Text>().text = "Game Over! \n You Lose.";
+            endGame = true;
+            /*
             foreach(GameObject go in GameObject.FindGameObjectsWithTag("Tile"))
             {
                 Destroy(go);
-            }
+            }*/
         } else if (opponent != null && opponent.GetComponent<Player>().health <= 0) {
             GameObject.Find("WaitingPanel").transform.position = new Vector3();
             GameObject.Find("WaitingPanel").transform.FindChild("Text").GetComponent<Text>().text = "Game Over! \n You Win.";
+            endGame = true;
+            /*
             foreach (GameObject go in GameObject.FindGameObjectsWithTag("Tile"))
             {
                 Destroy(go);
-            }
+            }*/
         }
 	}
+
+    private void handleInput() {
+        PlayerInput input = GameObject.FindObjectOfType<PlayerInput>();
+        if (input != null) {
+            print("INPUT HANDLING FOR PLAYER " + playerNum);
+            if (Input.GetMouseButton(0)) {
+                input.onLeftClick(playerNum);
+            }
+            else if (Input.GetMouseButton(1)) {
+                input.onRightClick(playerNum);
+            }
+        }
+    }
 
     [Command]
     public void Cmd_spawnUnit(string unit, int level, float x, float y)

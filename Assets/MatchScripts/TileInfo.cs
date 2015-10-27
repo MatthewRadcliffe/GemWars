@@ -1,6 +1,6 @@
-﻿using UnityEngine;
+﻿using UnityEngine.Networking;
 
-public class TileInfo : MonoBehaviour {
+public class TileInfo : NetworkBehaviour {
     public int column { get; set; }
     public int row { get; set; }
     public ResourceType type { get; set; }
@@ -18,10 +18,6 @@ public class TileInfo : MonoBehaviour {
         temp = one.column;
         one.column = two.column;
         two.column = temp;
-
-        Vector3 tempPos = one.transform.position;
-        one.transform.position = two.transform.position;
-        two.transform.position = tempPos;
     }
 
     public bool areSame(TileInfo other) {

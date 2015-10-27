@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using System.Collections;
 using System.Collections.Generic;
 using System;
 
@@ -14,7 +13,7 @@ public class MatchBoard : MonoBehaviour {
             try {
                 return grid[row, column];
             } catch (Exception e) {
-                throw;
+                throw e;
             }
         }
         set {
@@ -178,7 +177,10 @@ public class MatchBoard : MonoBehaviour {
         List<TileInfo> emptyTiles = new List<TileInfo>();
         for(int r = 0; r < Constants.rows; r++) {
             if(grid[r, column] == null) {
-                emptyTiles.Add(new TileInfo() { row = r, column = column });
+                GameObject newTile = new GameObject();
+                TileInfo info = newTile.AddComponent<TileInfo>();
+                info.row = r; info.column = column;
+                emptyTiles.Add(info);
             }
         }
         return emptyTiles;

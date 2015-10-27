@@ -1,24 +1,25 @@
 ﻿using UnityEngine;
-using System.Collections;
-using UnityEngine.Networking;
 
 public class ResourceGiver : MonoBehaviour {
+    private Player p1, p2;
 
-    private Player player;
-
-    public void findPlayer() {
+    private void setPlayers() {
         GameObject[] playerHolder = GameObject.FindGameObjectsWithTag("Player");
         foreach (GameObject go in playerHolder) {
-            if (go.GetComponent<Player>().isLocalPlayer) {
-                player = go.GetComponent<Player>();
+            if (go.GetComponent<Player>().playerNum == 1) {
+                p1 = go.GetComponent<Player>();
+            }
+            if (go.GetComponent<Player>().playerNum == 2) {
+                p2 = go.GetComponent<Player>();
             }
         }
     }
 
-    public void giveResource(ResourceType type, int amount) {
-        if (player == null) {
-            findPlayer();
+    public void giveResource(int playerNum, ResourceType type, int amount) {
+        if(p1 == null) {
+            setPlayers();
         }
-        player.Cmd_gainResource(type, amount);
+        Player toGive = (playerNum == 1) ? p1 : p2;
+        toGive.Cmd_gainResource(type, amount);
     }
 }
