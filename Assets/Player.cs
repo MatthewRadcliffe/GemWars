@@ -49,6 +49,7 @@ public class Player : NetworkBehaviour {
         if (!isLocalPlayer)
             return;
 
+
         updateUI();
         handleInput();
         bool endGame = false;
@@ -75,9 +76,13 @@ public class Player : NetworkBehaviour {
 	}
 
     private void handleInput() {
-        PlayerInput input = GameObject.FindObjectOfType<PlayerInput>();
-        if (input != null) {
-            print("INPUT HANDLING FOR PLAYER " + playerNum);
+        GameObject inputBoard = GameObject.Find("Board");
+        if(Input.GetMouseButton(0))
+        {
+            print("BUTTON PRESSED FOR PLAYER " + playerNum);
+        }
+        if (inputBoard != null) {
+            PlayerInput input = inputBoard.GetComponent<PlayerInput>();
             if (Input.GetMouseButton(0)) {
                 input.onLeftClick(playerNum);
             }

@@ -29,7 +29,8 @@ public class BoardSpawner : NetworkBehaviour {
         {
             boardInitialized = true;
             if (isServer) {
-                GameObject board = (GameObject)Instantiate(new GameObject(), new Vector3(0, 0, 0), Quaternion.identity);
+                GameObject board = (GameObject)Instantiate(Resources.Load("Board"), new Vector3(0, 0, 0), Quaternion.identity);
+                board.name = "Board";
                 BoardManager manager = board.AddComponent<BoardManager>();
                 manager.InitializeReferences(prefabs, p1Indicator, p2Indicator);
                 NetworkServer.Spawn(board);

@@ -87,7 +87,6 @@ public class PlayerInput : NetworkBehaviour {
     }
 
     private void UpdateP2() {
-        print("PLAYER 2 UPDATE INPUT");
         if (stateP2 == GameState.Idle && cooldownP2 <= 0)
         {
             RaycastHit2D hit = Physics2D.Raycast(Camera.main.ScreenToWorldPoint(Input.mousePosition), Vector2.zero);
