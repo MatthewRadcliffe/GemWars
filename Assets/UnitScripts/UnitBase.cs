@@ -17,7 +17,7 @@ public class UnitBase : NetworkBehaviour {
     public int purple;
     public int upgradeCost;
     public bool isColliding;
-    private List<GameObject> collidingUnits;
+    public List<GameObject> collidingUnits;
 
     public void Awake()
     {
@@ -35,12 +35,6 @@ public class UnitBase : NetworkBehaviour {
             collidingUnits.Add(coll.gameObject);
     }
 
-    //public void OnCollisionExit2D(Collision2D coll)
-    //{
-    //    print("exiting");
-    //    collidingUnits.Remove(coll.gameObject);
-    //}
-
     public void unitDied(GameObject unit)
     {
         collidingUnits.Remove(unit);
@@ -56,7 +50,7 @@ public class UnitBase : NetworkBehaviour {
         Destroy(this.gameObject);
     }
 
-    public void attack()
+    public virtual void attack()
     {
         if(collidingUnits.Count != 0)
         {
