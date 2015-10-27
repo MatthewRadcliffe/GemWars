@@ -87,26 +87,20 @@ public class PlayerInput : NetworkBehaviour {
     }
 
     private void UpdateP2() {
-        if (stateP2 == GameState.Idle && cooldownP2 <= 0)
-        {
+        if (stateP2 == GameState.Idle && cooldownP2 <= 0) {
             RaycastHit2D hit = Physics2D.Raycast(Camera.main.ScreenToWorldPoint(Input.mousePosition), Vector2.zero);
-            if (hit.collider != null)
-            {
+            if (hit.collider != null) {
                 stateP2 = GameState.SelectedTarget;
                 hitP2 = hit.collider.gameObject;
             }
         }
-        else if (stateP2 == GameState.SelectedTarget)
-        {
+        else if (stateP2 == GameState.SelectedTarget) {
             RaycastHit2D hit = Physics2D.Raycast(Camera.main.ScreenToWorldPoint(Input.mousePosition), Vector2.zero);
-            if (hit.collider != null && hitP2 != hit.collider.gameObject)
-            {
-                if (!Utilities.AreNeighbors(hitP2.GetComponent<TileInfo>(), hit.collider.gameObject.GetComponent<TileInfo>()))
-                {
+            if (hit.collider != null && hitP2 != hit.collider.gameObject) {
+                if (!Utilities.AreNeighbors(hitP2.GetComponent<TileInfo>(), hit.collider.gameObject.GetComponent<TileInfo>())) {
                     stateP2 = GameState.Idle;
                 }
-                else
-                {
+                else {
                     stateP2 = GameState.Animating;
                     lastMoved = 2;
                     target = hit;

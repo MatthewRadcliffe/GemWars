@@ -76,20 +76,24 @@ public class Player : NetworkBehaviour {
 	}
 
     private void handleInput() {
+        if (Input.GetMouseButton(0)) {
+            Cmd_receiveInput(true);
+        }
+        else if (Input.GetMouseButton(1)) {
+            Cmd_receiveInput(false);
+        }
+    }
+
+    [Command]
+    public void Cmd_receiveInput(bool leftClick)  {
         GameObject inputBoard = GameObject.Find("Board");
-        if(Input.GetMouseButton(0))
-        {
-            print("BUTTON PRESSED FOR PLAYER " + playerNum);
+        PlayerInput input = inputBoard.GetComponent<PlayerInput>();
+        if (leftClick) {
+            input.onLeftClick(playerNum);
+        } else {
+            input.onRightClick(playerNum);
         }
-        if (inputBoard != null) {
-            PlayerInput input = inputBoard.GetComponent<PlayerInput>();
-            if (Input.GetMouseButton(0)) {
-                input.onLeftClick(playerNum);
-            }
-            else if (Input.GetMouseButton(1)) {
-                input.onRightClick(playerNum);
-            }
-        }
+
     }
 
     [Command]
