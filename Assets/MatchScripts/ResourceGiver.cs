@@ -6,10 +6,10 @@ public class ResourceGiver : MonoBehaviour {
     private void setPlayers() {
         GameObject[] playerHolder = GameObject.FindGameObjectsWithTag("Player");
         foreach (GameObject go in playerHolder) {
-            if (go.GetComponent<Player>().playerNum == 1) {
+            if (go.GetComponent<Player>().playerNum == 0) {
                 p1 = go.GetComponent<Player>();
             }
-            if (go.GetComponent<Player>().playerNum == 2) {
+            if (go.GetComponent<Player>().playerNum == 1) {
                 p2 = go.GetComponent<Player>();
             }
         }
@@ -19,7 +19,7 @@ public class ResourceGiver : MonoBehaviour {
         if(p1 == null) {
             setPlayers();
         }
-        Player toGive = (playerNum == 1) ? p1 : p2;
+        Player toGive = (playerNum == 0) ? p1 : p2;
         toGive.Cmd_gainResource(type, amount);
     }
 }

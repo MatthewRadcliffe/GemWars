@@ -51,7 +51,6 @@ public class Player : NetworkBehaviour {
 
 
         updateUI();
-        handleInput();
         bool endGame = false;
         if(health <= 0)
         {
@@ -75,21 +74,12 @@ public class Player : NetworkBehaviour {
         }
 	}
 
-    private void handleInput() {
-        if (Input.GetMouseButton(0)) {
-            Cmd_receiveInput(true);
-        }
-        else if (Input.GetMouseButton(1)) {
-            Cmd_receiveInput(false);
-        }
-    }
-
     [Command]
-    public void Cmd_receiveInput(bool leftClick)  {
+    public void Cmd_receiveInput(bool leftClick, Vector3 mousePosition)  {
         GameObject inputBoard = GameObject.Find("Board");
         PlayerInput input = inputBoard.GetComponent<PlayerInput>();
         if (leftClick) {
-            input.onLeftClick(playerNum);
+            input.onLeftClick(playerNum, mousePosition);
         } else {
             input.onRightClick(playerNum);
         }

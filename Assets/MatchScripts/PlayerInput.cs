@@ -45,7 +45,7 @@ public class PlayerInput : NetworkBehaviour {
     }
 
     public GameObject getInitial() {
-        return (lastMoved == 1) ? hitP1 : hitP2;
+        return (lastMoved == 0) ? hitP1 : hitP2;
     }
 
     public RaycastHit2D getTarget() {
@@ -62,23 +62,23 @@ public class PlayerInput : NetworkBehaviour {
         stateP2 = GameState.Idle;
     }
     
-    private void UpdateP1() {
+    private void UpdateP1(Vector3 mousePos) {
         if (stateP1 == GameState.Idle && cooldownP1 <= 0) {
-            RaycastHit2D hit = Physics2D.Raycast(Camera.main.ScreenToWorldPoint(Input.mousePosition), Vector2.zero);
+            RaycastHit2D hit = Physics2D.Raycast(Camera.main.ScreenToWorldPoint(mousePos), Vector2.zero);
             if (hit.collider != null) {
                 stateP1 = GameState.SelectedTarget;
                 hitP1 = hit.collider.gameObject;
             }
         }
         else if (stateP1 == GameState.SelectedTarget) {
-            RaycastHit2D hit = Physics2D.Raycast(Camera.main.ScreenToWorldPoint(Input.mousePosition), Vector2.zero);
+            RaycastHit2D hit = Physics2D.Raycast(Camera.main.ScreenToWorldPoint(mousePos), Vector2.zero);
             if (hit.collider != null && hitP1 != hit.collider.gameObject) {
                 if (!Utilities.AreNeighbors(hitP1.GetComponent<TileInfo>(), hit.collider.gameObject.GetComponent<TileInfo>())) {
                     stateP1 = GameState.Idle;
                 }
                 else {
                     stateP1 = GameState.Animating;
-                    lastMoved = 1;
+                    lastMoved = 0;
                     target = hit;
                     cooldownP1 = pause;
                 }
@@ -86,23 +86,23 @@ public class PlayerInput : NetworkBehaviour {
         }
     }
 
-    private void UpdateP2() {
+    private void UpdateP2(Vector3 mousePos) {
         if (stateP2 == GameState.Idle && cooldownP2 <= 0) {
-            RaycastHit2D hit = Physics2D.Raycast(Camera.main.ScreenToWorldPoint(Input.mousePosition), Vector2.zero);
+            RaycastHit2D hit = Physics2D.Raycast(Camera.main.ScreenToWorldPoint(mousePos), Vector2.zero);
             if (hit.collider != null) {
                 stateP2 = GameState.SelectedTarget;
                 hitP2 = hit.collider.gameObject;
             }
         }
         else if (stateP2 == GameState.SelectedTarget) {
-            RaycastHit2D hit = Physics2D.Raycast(Camera.main.ScreenToWorldPoint(Input.mousePosition), Vector2.zero);
+            RaycastHit2D hit = Physics2D.Raycast(Camera.main.ScreenToWorldPoint(mousePos), Vector2.zero);
             if (hit.collider != null && hitP2 != hit.collider.gameObject) {
                 if (!Utilities.AreNeighbors(hitP2.GetComponent<TileInfo>(), hit.collider.gameObject.GetComponent<TileInfo>())) {
                     stateP2 = GameState.Idle;
                 }
                 else {
                     stateP2 = GameState.Animating;
-                    lastMoved = 2;
+                    lastMoved = 1;
                     target = hit;
                     cooldownP2 = pause;
                 }
@@ -110,16 +110,16 @@ public class PlayerInput : NetworkBehaviour {
         }
     }
 
-    public void onLeftClick(int playerNum) {
-        if(playerNum == 1) {
-            UpdateP1();
+    public void onLeftClick(int playerNum, Vector3 mousePos) {
+        if(playerNum == 0) {
+            UpdateP1(mousePos);
         } else {
-            UpdateP2();
+            UpdateP2(mousePos);
         }
     }
 
     public void onRightClick(int playerNum) {
-        if(playerNum == 1) {
+        if(playerNum == 0) {
             if(stateP1 == GameState.SelectedTarget) {
                 stateP1 = GameState.Idle;
             }

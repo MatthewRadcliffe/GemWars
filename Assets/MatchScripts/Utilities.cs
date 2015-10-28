@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using System.Collections;
 
 public class Utilities : MonoBehaviour {
     public static bool AreNeighbors(TileInfo t1, TileInfo t2) {

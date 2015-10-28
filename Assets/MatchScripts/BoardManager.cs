@@ -110,8 +110,9 @@ public class BoardManager : MonoBehaviour {
             if(totalMatches.Count() > Constants.minMatches) {
                 resourceAmount += (totalMatches.Count() - 3) * 2;
             }
-            
-            giver.giveResource(playerNum, totalMatches.ElementAt(0).GetComponent<TileInfo>().type, resourceAmount);
+
+            ResourceType typeToGive = totalMatches.ElementAt(0).GetComponent<TileInfo>().type;
+            giver.giveResource(playerNum, typeToGive, resourceAmount);
 
             foreach (var item in totalMatches) {
                 board.remove(item);
