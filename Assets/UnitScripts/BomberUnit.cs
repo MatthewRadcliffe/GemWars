@@ -12,9 +12,9 @@ public class BomberUnit : UnitBase {
         base.setStats();
         this.health = 8 + (4 * level);
         this.speed = .6f + (.1f * level);
-        this.power = 30 + (20f * level);
-        this.purple = 7 + (1 * level);
-        this.yellow = 4 + (1 * level);
+        this.power = 40 + (30f * level);
+        this.purple = 6 + (1 * level);
+        this.yellow = 3 + ((1 * level)/2);
         this.upgradeCost = 6 + (2 * level);
     }
 
@@ -22,7 +22,7 @@ public class BomberUnit : UnitBase {
     {
         timer += Time.deltaTime;
 
-        if (collidingUnits.Count != 0 && timer >= 1.25f && !blownUp)
+        if (collidingUnits.Count != 0 && timer >= 1.0f && !blownUp)
         {
             if (collidingUnits[0].transform.name.Equals("Player1Base"))
             {

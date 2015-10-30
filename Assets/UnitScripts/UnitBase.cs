@@ -55,8 +55,11 @@ public class UnitBase : NetworkBehaviour {
         {
             if(collidingUnits[0].transform.name.Equals("Player1Base")) {
                 opposingPlayer.health -= power * Time.deltaTime;
-            } else if (collidingUnits[0].transform.name.Equals("Player2Base")) {
+                health -= 4 * Time.deltaTime;
+            }
+            else if (collidingUnits[0].transform.name.Equals("Player2Base")) {
                 opposingPlayer.health -= power * Time.deltaTime;
+                health -= 4 * Time.deltaTime;
             }
             else {
                 collidingUnits[0].GetComponent<UnitBase>().health -= power * Time.deltaTime;

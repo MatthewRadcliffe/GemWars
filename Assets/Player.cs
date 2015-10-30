@@ -57,20 +57,20 @@ public class Player : NetworkBehaviour {
             GameObject.Find("WaitingPanel").transform.position = new Vector3();
             GameObject.Find("WaitingPanel").transform.FindChild("Text").GetComponent<Text>().text = "Game Over! \n You Lose.";
             endGame = true;
-            /*
+            
             foreach(GameObject go in GameObject.FindGameObjectsWithTag("Tile"))
             {
                 Destroy(go);
-            }*/
+            }
         } else if (opponent != null && opponent.GetComponent<Player>().health <= 0) {
             GameObject.Find("WaitingPanel").transform.position = new Vector3();
             GameObject.Find("WaitingPanel").transform.FindChild("Text").GetComponent<Text>().text = "Game Over! \n You Win.";
             endGame = true;
-            /*
+            
             foreach (GameObject go in GameObject.FindGameObjectsWithTag("Tile"))
             {
                 Destroy(go);
-            }*/
+            }
         }
 	}
 

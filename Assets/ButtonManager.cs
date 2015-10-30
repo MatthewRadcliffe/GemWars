@@ -20,6 +20,12 @@ public class ButtonManager : NetworkBehaviour {
         if (myPlayer == null)
             return;
 
+        if(GameObject.Find("WaitingPanel").transform.position == new Vector3())
+        {
+            foreach (GameObject go in units)
+                go.GetComponent<UnitBase>().level = 1;
+        }
+
         foreach (GameObject go in units)
             go.GetComponent<UnitBase>().setStats();
 
