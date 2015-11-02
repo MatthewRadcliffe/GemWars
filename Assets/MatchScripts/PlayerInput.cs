@@ -65,14 +65,14 @@ public class PlayerInput : NetworkBehaviour {
     private void UpdateP1(Vector3 mousePos) {
         if (stateP1 == GameState.Idle && cooldownP1 <= 0) {
             RaycastHit2D hit = Physics2D.Raycast(Camera.main.ScreenToWorldPoint(mousePos), Vector2.zero);
-            if (hit.collider != null) {
+            if (hit.collider != null && hit.collider.gameObject.GetComponent<TileInfo>() != null) {
                 stateP1 = GameState.SelectedTarget;
                 hitP1 = hit.collider.gameObject;
             }
         }
         else if (stateP1 == GameState.SelectedTarget) {
             RaycastHit2D hit = Physics2D.Raycast(Camera.main.ScreenToWorldPoint(mousePos), Vector2.zero);
-            if (hit.collider != null && hitP1 != hit.collider.gameObject) {
+            if (hit.collider != null && hit.collider.gameObject.GetComponent<TileInfo>() != null && hitP1 != hit.collider.gameObject) {
                 if (!Utilities.AreNeighbors(hitP1.GetComponent<TileInfo>(), hit.collider.gameObject.GetComponent<TileInfo>())) {
                     stateP1 = GameState.Idle;
                 }
@@ -89,14 +89,14 @@ public class PlayerInput : NetworkBehaviour {
     private void UpdateP2(Vector3 mousePos) {
         if (stateP2 == GameState.Idle && cooldownP2 <= 0) {
             RaycastHit2D hit = Physics2D.Raycast(Camera.main.ScreenToWorldPoint(mousePos), Vector2.zero);
-            if (hit.collider != null) {
+            if (hit.collider != null && hit.collider.gameObject.GetComponent<TileInfo>() != null) {
                 stateP2 = GameState.SelectedTarget;
                 hitP2 = hit.collider.gameObject;
             }
         }
         else if (stateP2 == GameState.SelectedTarget) {
             RaycastHit2D hit = Physics2D.Raycast(Camera.main.ScreenToWorldPoint(mousePos), Vector2.zero);
-            if (hit.collider != null && hitP2 != hit.collider.gameObject) {
+            if (hit.collider != null && hit.collider.gameObject.GetComponent<TileInfo>() != null && hitP2 != hit.collider.gameObject) {
                 if (!Utilities.AreNeighbors(hitP2.GetComponent<TileInfo>(), hit.collider.gameObject.GetComponent<TileInfo>())) {
                     stateP2 = GameState.Idle;
                 }

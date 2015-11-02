@@ -116,7 +116,9 @@ public class BoardManager : MonoBehaviour {
             foreach (var item in totalMatches) {
                 animateResource(playerNum, item);
             }
+
             yield return new WaitForSeconds(Constants.MoveAnimationDuration);
+
             foreach (var item in totalMatches) {
                 board.remove(item);
             }
