@@ -1,29 +1,28 @@
-Initialize engine version: 5.2.2f1 (3757309da7e7)
+Initialize engine version: 5.2.1f1 (44735ea161b3)
 GfxDevice: creating device client; threaded=1
 Direct3D:
     Version:  Direct3D 11.0 [level 11.0]
-    Renderer: NVIDIA Quadro 2000M (ID=0xdda)
+    Renderer: NVIDIA Quadro 2000M  (ID=0xdda)
     Vendor:   NVIDIA
-    VRAM:     1984 MB
+    VRAM:     1998 MB
 Begin MonoManager ReloadAssembly
-Platform assembly: D:\Documents\Projects\Quarter 13\Game Dev\GemWars\GemWars_Data\Managed\UnityEngine.dll (this message is harmless)
-Loading D:\Documents\Projects\Quarter 13\Game Dev\GemWars\GemWars_Data\Managed\UnityEngine.dll into Unity Child Domain
-Platform assembly: D:\Documents\Projects\Quarter 13\Game Dev\GemWars\GemWars_Data\Managed\Assembly-CSharp-firstpass.dll (this message is harmless)
-Loading D:\Documents\Projects\Quarter 13\Game Dev\GemWars\GemWars_Data\Managed\Assembly-CSharp-firstpass.dll into Unity Child Domain
-Platform assembly: D:\Documents\Projects\Quarter 13\Game Dev\GemWars\GemWars_Data\Managed\Assembly-CSharp.dll (this message is harmless)
-Loading D:\Documents\Projects\Quarter 13\Game Dev\GemWars\GemWars_Data\Managed\Assembly-CSharp.dll into Unity Child Domain
-Platform assembly: D:\Documents\Projects\Quarter 13\Game Dev\GemWars\GemWars_Data\Managed\UnityEngine.UI.dll (this message is harmless)
-Loading D:\Documents\Projects\Quarter 13\Game Dev\GemWars\GemWars_Data\Managed\UnityEngine.UI.dll into Unity Child Domain
-Platform assembly: D:\Documents\Projects\Quarter 13\Game Dev\GemWars\GemWars_Data\Managed\UnityEngine.Networking.dll (this message is harmless)
-Loading D:\Documents\Projects\Quarter 13\Game Dev\GemWars\GemWars_Data\Managed\UnityEngine.Networking.dll into Unity Child Domain
-Platform assembly: D:\Documents\Projects\Quarter 13\Game Dev\GemWars\GemWars_Data\Managed\System.Core.dll (this message is harmless)
-- Completed reload, in  0.056 seconds
+Platform assembly: E:\School\GemWars\GemWars_Data\Managed\UnityEngine.dll (this message is harmless)
+Loading E:\School\GemWars\GemWars_Data\Managed\UnityEngine.dll into Unity Child Domain
+Platform assembly: E:\School\GemWars\GemWars_Data\Managed\Assembly-CSharp-firstpass.dll (this message is harmless)
+Loading E:\School\GemWars\GemWars_Data\Managed\Assembly-CSharp-firstpass.dll into Unity Child Domain
+Platform assembly: E:\School\GemWars\GemWars_Data\Managed\Assembly-CSharp.dll (this message is harmless)
+Loading E:\School\GemWars\GemWars_Data\Managed\Assembly-CSharp.dll into Unity Child Domain
+Platform assembly: E:\School\GemWars\GemWars_Data\Managed\UnityEngine.UI.dll (this message is harmless)
+Loading E:\School\GemWars\GemWars_Data\Managed\UnityEngine.UI.dll into Unity Child Domain
+Platform assembly: E:\School\GemWars\GemWars_Data\Managed\UnityEngine.Networking.dll (this message is harmless)
+Loading E:\School\GemWars\GemWars_Data\Managed\UnityEngine.Networking.dll into Unity Child Domain
+Platform assembly: E:\School\GemWars\GemWars_Data\Managed\System.Core.dll (this message is harmless)
+- Completed reload, in  0.146 seconds
 desktop: 1920x1080 60Hz; virtual: 1920x1080 at 0,0
 <RI> Initializing input.
-XInput1_3.dll not found. Trying XInput9_1_0.dll instead...
 <RI> Input initialized.
 <RI> Initialized touch support.
-Platform assembly: D:\Documents\Projects\Quarter 13\Game Dev\GemWars\GemWars_Data\Managed\System.dll (this message is harmless)
+Platform assembly: E:\School\GemWars\GemWars_Data\Managed\System.dll (this message is harmless)
 Setting up 2 worker threads for Enlighten.
-  Thread -> id: 1948 -> priority: 1 
-  Thread -> id: a40 -> priority: 1 
+  Thread -> id: 2b9c -> priority: 1 
+  Thread -> id: 322c -> priority: 1 
