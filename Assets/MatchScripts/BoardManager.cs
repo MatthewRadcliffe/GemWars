@@ -110,13 +110,18 @@ public class BoardManager : MonoBehaviour {
             if(totalMatches.Count() > Constants.minMatches) {
                 resourceAmount += (totalMatches.Count() - 3) * 2;
             }
-
+            
             ResourceType typeToGive = totalMatches.ElementAt(0).GetComponent<TileInfo>().type;
-            giver.giveResource(playerNum, typeToGive, resourceAmount);
 
+            foreach (var item in totalMatches) {
+                animateResource(playerNum, item);
+            }
+            yield return new WaitForSeconds(Constants.MoveAnimationDuration);
             foreach (var item in totalMatches) {
                 board.remove(item);
             }
+
+            giver.giveResource(playerNum, typeToGive, resourceAmount);
             
             var columns = totalMatches.Select(go => go.GetComponent<TileInfo>().column).Distinct(); //get the columns that we had a collapse
             var collapsedTileInfo = board.Collapse(columns); //collapse the ones gone
@@ -132,6 +137,14 @@ public class BoardManager : MonoBehaviour {
             yield return new WaitForSeconds(Constants.ActionDelay);
         }
         input.reset();
+    }
+
+    private void animateResource(int playerNum, GameObject item) {
+        Vector3 targetPos = new Vector3(4.2f, 4.1f, 0.0f);
+        if(playerNum != 0) {
+            targetPos.x *= -1;
+        }
+        iTween.MoveTo(item, targetPos, Constants.MoveAnimationDuration);
     }
 
     private void FixSortingLayer(GameObject hitGo, GameObject hitGo2) {
