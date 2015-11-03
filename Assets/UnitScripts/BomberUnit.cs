@@ -14,7 +14,6 @@ public class BomberUnit : UnitBase {
         this.speed = .6f + (.1f * level);
         this.power = 40 + (30f * level);
         this.purple = 6 + (1 * level);
-        this.yellow = 3 + ((1 * level)/2);
         this.upgradeCost = 6 + (2 * level);
     }
 

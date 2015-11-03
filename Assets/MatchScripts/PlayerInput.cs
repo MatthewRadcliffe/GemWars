@@ -10,7 +10,7 @@ public class PlayerInput : NetworkBehaviour {
 
     private Vector2 OffScreen = new Vector2(1000, 0);
 
-    private float pause = 1.3f;
+    private float pause = 0.7f;
     private float cooldownP1, cooldownP2;
 
     private int lastMoved;
@@ -75,12 +75,12 @@ public class PlayerInput : NetworkBehaviour {
             if (hit.collider != null && hit.collider.gameObject.GetComponent<TileInfo>() != null && hitP1 != hit.collider.gameObject) {
                 if (!Utilities.AreNeighbors(hitP1.GetComponent<TileInfo>(), hit.collider.gameObject.GetComponent<TileInfo>())) {
                     stateP1 = GameState.Idle;
+                    cooldownP1 = pause;
                 }
                 else {
                     stateP1 = GameState.Animating;
                     lastMoved = 0;
                     target = hit;
-                    cooldownP1 = pause;
                 }
             }
         }
@@ -99,12 +99,12 @@ public class PlayerInput : NetworkBehaviour {
             if (hit.collider != null && hit.collider.gameObject.GetComponent<TileInfo>() != null && hitP2 != hit.collider.gameObject) {
                 if (!Utilities.AreNeighbors(hitP2.GetComponent<TileInfo>(), hit.collider.gameObject.GetComponent<TileInfo>())) {
                     stateP2 = GameState.Idle;
+                    cooldownP2 = pause;
                 }
                 else {
                     stateP2 = GameState.Animating;
                     lastMoved = 1;
                     target = hit;
-                    cooldownP2 = pause;
                 }
             }
         }
@@ -130,6 +130,14 @@ public class PlayerInput : NetworkBehaviour {
         }
     }
 
+    private void cooldownHandling()
+    {
+        if(cooldownP1 > 0) { cooldownP1 -= Time.deltaTime; }
+        else { cooldownP1 = 0; }
+        if(cooldownP2 > 0) { cooldownP2 -= Time.deltaTime; }
+        else { cooldownP2 = 0; }
+    }
+
     public GameState commonUpdate() {
         GameState result = GameState.Paused;
         
@@ -141,11 +149,8 @@ public class PlayerInput : NetworkBehaviour {
         }
 
         SelectorUpdate();
-        
-        if(cooldownP1 > 0) { cooldownP1 -= Time.deltaTime; }
-        else { cooldownP1 = 0; }
-        if(cooldownP2 > 0) { cooldownP2 -= Time.deltaTime; }
-        else { cooldownP2 = 0; }
+
+        cooldownHandling();
         
         return result;
     }

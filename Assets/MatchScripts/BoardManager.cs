@@ -190,7 +190,22 @@ public class BoardManager : MonoBehaviour {
     }
 
     private GameObject randomTile() {
-        return TilePrefabs[UnityEngine.Random.Range(0, TilePrefabs.Length)];
+        int rand = Random.Range(0, 100);// TilePrefabs.Length);
+
+        int index = -1;
+        if (rand >= 85) { //15% chance of purple
+            index = 4;
+        } else if (rand >= 60) { //25% chance of yellow
+            index = 3;
+        } else if (rand >= 40) { //20% chance of green
+            index = 2;
+        } else if (rand >= 20) { //20% chance of blue
+            index = 1;
+        } else { //20% chance of red
+            index = 0;
+        }
+        
+        return TilePrefabs[index];
     }
 
     private void WipeBoard() {
