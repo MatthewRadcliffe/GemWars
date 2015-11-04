@@ -129,7 +129,7 @@ public class PlayerInput : NetworkBehaviour {
             }
         }
     }
-
+    //for commit
     private void cooldownHandling()
     {
         if(cooldownP1 > 0) { cooldownP1 -= Time.deltaTime; }
