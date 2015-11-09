@@ -1,6 +1,5 @@
 ﻿using UnityEngine;
 using UnityEngine.Networking;
-using System.Collections;
 using UnityEngine.UI;
 
 public class ButtonManager : NetworkBehaviour {
@@ -11,21 +10,23 @@ public class ButtonManager : NetworkBehaviour {
     private Player myPlayer;
     private float startingX;
     private float startingY;
+    private float timer;
+    private bool rematchAccepted = false, p1Rematch, p2Rematch;
 
-    public void FixedUpdate()
-    {
+    public void FixedUpdate() {
+        //checkRematchStatus();
         if (myPlayer == null)
             findMyPlayer();
 
         if (myPlayer == null)
             return;
 
-        if(GameObject.Find("WaitingPanel").transform.position == new Vector3())
-        {
-            foreach (GameObject go in units)
-                go.GetComponent<UnitBase>().level = 1;
+        timer -= Time.deltaTime;
+        if(timer < 0) {
+            timer = 0;
+            setAllInteractable(true);
         }
-
+        
         foreach (GameObject go in units)
             go.GetComponent<UnitBase>().setStats();
 
@@ -55,7 +56,61 @@ public class ButtonManager : NetworkBehaviour {
         unitPanel.transform.FindChild("UnitBuy3").transform.FindChild("UnitCostPanel").transform.FindChild("ResourceCost").transform.FindChild("Cost").GetComponent<Text>().text = "x " + units[2].GetComponent<UnitBase>().red;
         unitPanel.transform.FindChild("UnitBuy4").transform.FindChild("UnitCostPanel").transform.FindChild("ResourceCost").transform.FindChild("Cost").GetComponent<Text>().text = "x " + units[3].GetComponent<UnitBase>().purple;
         unitPanel.transform.FindChild("UnitBuy5").transform.FindChild("UnitCostPanel").transform.FindChild("ResourceCost").transform.FindChild("Cost").GetComponent<Text>().text = "x " + units[4].GetComponent<UnitBase>().yellow;
-    }//THENOTE 
+    }
+
+    private void setAllInteractable(bool interactable) {
+        for (int i = 0; i < units.Length; i++) {
+            upgradePanel.transform.FindChild("UnitUpgrade" + (i + 1)).GetComponent<Button>().interactable = interactable;
+            unitPanel.transform.FindChild("UnitBuy" + (i + 1)).GetComponent<Button>().interactable = interactable;
+        }
+    }
+
+    private void checkRematchStatus() {
+        GameObject[] playerHolder = GameObject.FindGameObjectsWithTag("Player");
+        foreach (GameObject go in playerHolder) {
+            Player temp = go.GetComponent<Player>();
+            if(temp.isLocalPlayer && temp.getReset()) {
+                if (!p1Rematch) {
+                    p1Rematch = true;
+                }
+            } else {
+                if(temp.getReset() && !p2Rematch) {
+                    p2Rematch = true;
+                }
+            }
+        }
+        if(p1Rematch && p2Rematch) {
+            rematchAccepted = true;
+        }
+    }
+
+    public void endGame() {
+        for(int i = 0; i < units.Length; i++) {
+            upgradePanel.transform.FindChild("UnitUpgrade" + (i + 1)).GetComponent<Button>().interactable = false;
+            unitPanel.transform.FindChild("UnitBuy" + (i + 1)).GetComponent<Button>().interactable = false;
+        }
+        //Button resetButton = GameObject.Find("WaitingPanel").transform.FindChild("ResetButton").GetComponent<Button>();
+        //resetButton.transform.FindChild("Text").GetComponent<Text>().text = "Play Again?";
+        //resetButton.gameObject.SetActive(true);
+        //resetButton.interactable = true;
+    }
+
+    public void askForRematch() {
+        foreach (GameObject go in units) {
+            go.GetComponent<UnitBase>().level = 1;
+        }
+        GameObject.Find("WaitingPanel").transform.FindChild("Text").GetComponent<Text>().text = "Waiting for other player...";
+        Button resetButton = GameObject.Find("WaitingPanel").transform.FindChild("ResetButton").GetComponent<Button>();
+        resetButton.interactable = false;
+        myPlayer.Cmd_setReset(true);
+    }
+
+    private void rematch()
+    {
+        if (myPlayer.playerNum == 1) {
+            GameObject.Find("Board").GetComponent<BoardManager>().reset();
+        }
+    }
 
     public void upgrade(int unit)
     {
@@ -72,18 +127,24 @@ public class ButtonManager : NetworkBehaviour {
             findMyPlayer();
         }
 
-        if(unit != 4) {
-            myPlayer.Cmd_spawnUnit(units[unit].transform.name, units[unit].GetComponent<UnitBase>().level, startingX, startingY - .2f);
-        }
-        else {
-            myPlayer.Cmd_spawnUnit(units[unit].transform.name, units[unit].GetComponent<UnitBase>().level, startingX, startingY + .4f);
-        }
+        if (timer <= 0) {
+            if (unit != 4) {
+                myPlayer.Cmd_spawnUnit(units[unit].transform.name, units[unit].GetComponent<UnitBase>().level, startingX, startingY - .2f);
+            }
+            else {
+                myPlayer.Cmd_spawnUnit(units[unit].transform.name, units[unit].GetComponent<UnitBase>().level, startingX, startingY + .4f);
+            }
 
-        myPlayer.Cmd_spendResource(ResourceType.Yellow, units[unit].GetComponent<UnitBase>().yellow);
-        myPlayer.Cmd_spendResource(ResourceType.Red, units[unit].GetComponent<UnitBase>().red);
-        myPlayer.Cmd_spendResource(ResourceType.Green, units[unit].GetComponent<UnitBase>().green);
-        myPlayer.Cmd_spendResource(ResourceType.Blue, units[unit].GetComponent<UnitBase>().blue);
-        myPlayer.Cmd_spendResource(ResourceType.Purple, units[unit].GetComponent<UnitBase>().purple);
+            myPlayer.Cmd_spendResource(ResourceType.Yellow, units[unit].GetComponent<UnitBase>().yellow);
+            myPlayer.Cmd_spendResource(ResourceType.Red, units[unit].GetComponent<UnitBase>().red);
+            myPlayer.Cmd_spendResource(ResourceType.Green, units[unit].GetComponent<UnitBase>().green);
+            myPlayer.Cmd_spendResource(ResourceType.Blue, units[unit].GetComponent<UnitBase>().blue);
+            myPlayer.Cmd_spendResource(ResourceType.Purple, units[unit].GetComponent<UnitBase>().purple);
+
+            timer = 0.5f;
+
+            setAllInteractable(false);
+        }
     }
 
 
