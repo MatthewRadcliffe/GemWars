@@ -71,6 +71,8 @@ public class ButtonManager : NetworkBehaviour {
         unitPanel.transform.FindChild("UnitBuy3").transform.FindChild("UnitCostPanel").transform.FindChild("ResourceCost").transform.FindChild("Cost").GetComponent<Text>().text = "x " + units[2].GetComponent<UnitBase>().red;
         unitPanel.transform.FindChild("UnitBuy4").transform.FindChild("UnitCostPanel").transform.FindChild("ResourceCost").transform.FindChild("Cost").GetComponent<Text>().text = "x " + units[3].GetComponent<UnitBase>().purple;
         unitPanel.transform.FindChild("UnitBuy5").transform.FindChild("UnitCostPanel").transform.FindChild("ResourceCost").transform.FindChild("Cost").GetComponent<Text>().text = "x " + units[4].GetComponent<UnitBase>().yellow;
+
+        hotKeysActions();
     }
 
     private void setAllInteractable(bool interactable) {
@@ -185,6 +187,32 @@ public class ButtonManager : NetworkBehaviour {
             startingX = GameObject.Find("Player2Base").transform.position.x;
             startingY = GameObject.Find("Player2Base").transform.position.y;
         }
+    }
+
+    private void hotKeysActions()
+    {
+        if (Input.GetKeyUp(KeyCode.Alpha1) && unitPanel.transform.FindChild("UnitBuy1").GetComponent<Button>().interactable)
+            purchaseUnit(0);
+        if (Input.GetKeyUp(KeyCode.Alpha2) && unitPanel.transform.FindChild("UnitBuy2").GetComponent<Button>().interactable)
+            purchaseUnit(1);
+        if (Input.GetKeyUp(KeyCode.Alpha3) && unitPanel.transform.FindChild("UnitBuy3").GetComponent<Button>().interactable)
+            purchaseUnit(2);
+        if (Input.GetKeyUp(KeyCode.Alpha4) && unitPanel.transform.FindChild("UnitBuy4").GetComponent<Button>().interactable)
+            purchaseUnit(3);
+        if (Input.GetKeyUp(KeyCode.Alpha5) && unitPanel.transform.FindChild("UnitBuy5").GetComponent<Button>().interactable)
+            purchaseUnit(4);
+
+        if (Input.GetKeyUp(KeyCode.Q) && upgradePanel.transform.FindChild("UnitUpgrade1").GetComponent<Button>().interactable)
+            upgrade(0);
+        if (Input.GetKeyUp(KeyCode.W) && upgradePanel.transform.FindChild("UnitUpgrade2").GetComponent<Button>().interactable)
+            upgrade(1);
+        if (Input.GetKeyUp(KeyCode.E) && upgradePanel.transform.FindChild("UnitUpgrade3").GetComponent<Button>().interactable)
+            upgrade(2);
+        if (Input.GetKeyUp(KeyCode.R) && upgradePanel.transform.FindChild("UnitUpgrade4").GetComponent<Button>().interactable)
+            upgrade(3);
+        if (Input.GetKeyUp(KeyCode.T) && upgradePanel.transform.FindChild("UnitUpgrade5").GetComponent<Button>().interactable)
+            upgrade(4);
+
     }
 
 }
