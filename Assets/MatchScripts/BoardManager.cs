@@ -39,6 +39,8 @@ public class BoardManager : MonoBehaviour {
             TilePrefabs[i].GetComponent<TileInfo>().type = (ResourceType)i;
         }
     }
+
+    public void reset() { InitializeSpawn(); }
     
     private void InitializeSpawn() {
         if (board != null) {
@@ -68,6 +70,10 @@ public class BoardManager : MonoBehaviour {
         }
 
         SetupSpawnPositions();
+    }
+
+    public void resetBoard() {
+        InitializeSpawn();
     }
 
     private void InstantiateAndPlace(int row, int column, GameObject newTile) {

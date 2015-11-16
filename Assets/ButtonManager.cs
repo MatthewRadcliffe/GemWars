@@ -26,7 +26,22 @@ public class ButtonManager : NetworkBehaviour {
             timer = 0;
             setAllInteractable(true);
         }
-        
+
+        if (GameObject.Find("WaitingPanel").transform.position == new Vector3())
+        {
+            foreach (GameObject go in units)
+                go.GetComponent<UnitBase>().level = 1;
+
+            for (int i = 0; i < units.Length; i++)
+            {
+                upgradePanel.transform.FindChild("UnitUpgrade" + (i + 1)).GetComponent<Button>().interactable = false;
+                unitPanel.transform.FindChild("UnitBuy" + (i + 1)).GetComponent<Button>().interactable = false;
+            }
+
+            return;
+        }
+
+
         foreach (GameObject go in units)
             go.GetComponent<UnitBase>().setStats();
 
@@ -84,8 +99,14 @@ public class ButtonManager : NetworkBehaviour {
         }
     }
 
-    public void endGame() {
-        for(int i = 0; i < units.Length; i++) {
+    public void endGame()
+    {
+        foreach (GameObject go in units)
+        {
+            go.GetComponent<UnitBase>().level = 1;
+        }
+
+        for (int i = 0; i < units.Length; i++) {
             upgradePanel.transform.FindChild("UnitUpgrade" + (i + 1)).GetComponent<Button>().interactable = false;
             unitPanel.transform.FindChild("UnitBuy" + (i + 1)).GetComponent<Button>().interactable = false;
         }

@@ -23,6 +23,9 @@ public class Player : NetworkBehaviour {
     private GameObject opponentsHealthBar;
     private UnitFactory factory;
 
+    private bool gameOver = false;
+    private bool reset = false;
+
     public void Start()
     {
         if(isLocalPlayer) {
@@ -43,33 +46,27 @@ public class Player : NetworkBehaviour {
 
     public void FixedUpdate ()
     {
-        if (factory == null)
-            factory = GameObject.Find("GameManager").GetComponent<UnitFactory>();
+        if (!gameOver) {
+            if (factory == null)
+                factory = GameObject.Find("GameManager").GetComponent<UnitFactory>();
 
-        if (!isLocalPlayer)
-            return;
+            if (!isLocalPlayer)
+                return;
 
 
-        updateUI();
-        bool endGame = false;
-        if(health <= 0)
-        {
-            GameObject.Find("WaitingPanel").transform.position = new Vector3();
-            GameObject.Find("WaitingPanel").transform.FindChild("Text").GetComponent<Text>().text = "Game Over! \n You Lose.";
-            endGame = true;
-            
-            foreach(GameObject go in GameObject.FindGameObjectsWithTag("Tile"))
-            {
-                Destroy(go);
-            }
-        } else if (opponent != null && opponent.GetComponent<Player>().health <= 0) {
-            GameObject.Find("WaitingPanel").transform.position = new Vector3();
-            GameObject.Find("WaitingPanel").transform.FindChild("Text").GetComponent<Text>().text = "Game Over! \n You Win.";
-            endGame = true;
-            
-            foreach (GameObject go in GameObject.FindGameObjectsWithTag("Tile"))
-            {
-                Destroy(go);
+            updateUI();
+            string endText = "";
+            if (health <= 0) { endText = "Game Over! \n You Lose."; }
+            else if (opponent != null && opponent.GetComponent<Player>().health <= 0) { endText = "Game Over! \n You Win."; }
+
+            if (endText.Length > 0) {
+                GameObject.Find("WaitingPanel").transform.position = new Vector3();
+                GameObject.Find("WaitingPanel").transform.FindChild("Text").GetComponent<Text>().text = endText;
+                //gameOver = true;
+
+                foreach (GameObject go in GameObject.FindGameObjectsWithTag("Tile")) {
+                    Destroy(go);
+                }
             }
         }
 	}
@@ -84,6 +81,15 @@ public class Player : NetworkBehaviour {
             input.onRightClick(playerNum);
         }
 
+    }
+
+    [Command]
+    public void Cmd_setReset(bool reset) {
+        this.reset = reset;
+    }
+
+    public bool getReset() {
+        return reset;
     }
 
     [Command]
@@ -183,12 +189,13 @@ public class Player : NetworkBehaviour {
 
         if (opponent == null) {
             GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
-            foreach (GameObject go in players)
-                if (!go.GetComponent<Player>().isLocalPlayer)
+            foreach (GameObject go in players) {
+                if (!go.GetComponent<Player>().isLocalPlayer) {
                     opponent = go;
+                }
+            }
             return;
         }
-
         opponentsHealthBar.transform.FindChild("Health").GetComponent<Image>().fillAmount = (opponent.GetComponent<Player>().health / 1000);
         opponentsHealthBar.transform.FindChild("Health").transform.FindChild("Amount").GetComponent<Text>().text = opponent.GetComponent<Player>().health + " / 1000";
 
