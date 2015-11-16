@@ -11,5 +11,6 @@ public class HealthyUnit : UnitBase
         this.power = 7 + (2.5f * level);
         this.red = 7 + (1 * level);
         this.upgradeCost = 4 + (1 * level);
+        this.startHP = this.health;
     }
 }

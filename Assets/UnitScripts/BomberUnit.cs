@@ -15,6 +15,7 @@ public class BomberUnit : UnitBase {
         this.power = 40 + (30f * level);
         this.purple = 6 + (1 * level);
         this.upgradeCost = 6 + (2 * level);
+        this.startHP = this.health;
     }
 
     public override void attack()

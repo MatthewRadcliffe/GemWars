@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 using UnityEngine.Networking;
 using System.Collections.Generic;
 
@@ -7,6 +8,7 @@ public class UnitBase : NetworkBehaviour {
     public Player opposingPlayer;
     public int level;
     public float health;
+    public float startHP;
     public float power;
     public float speed;
 
@@ -74,6 +76,8 @@ public class UnitBase : NetworkBehaviour {
             isColliding = false;
         else
             isColliding = true;
+
+        this.transform.FindChild("Canvas").transform.FindChild("HeathBar").transform.FindChild("Image").GetComponent<Image>().fillAmount = health / startHP;
 
     }
 

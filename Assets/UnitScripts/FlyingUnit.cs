@@ -10,5 +10,6 @@ public class FlyingUnit : UnitBase {
         this.power =  3f + (2f * level);
         this.yellow = 3 + ((1 * level) / 2);
         this.upgradeCost = 3 + (2 * level);
+        this.startHP = this.health;
     }
 }

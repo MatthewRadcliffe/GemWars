@@ -13,5 +13,6 @@ public class FastUnit : UnitBase {
         this.power = 4 + (1.75f * level);
         this.green = 3 + (1 * level);
         this.upgradeCost = 2 + (1 * level);
+        this.startHP = this.health;
     }
 }
