@@ -11,39 +11,36 @@ public class ButtonManager : NetworkBehaviour {
     private float startingX;
     private float startingY;
     private float timer;
-    private bool rematchAccepted = false, p1Rematch, p2Rematch;
+    private bool showHelp;
 
     public void FixedUpdate() {
-        //checkRematchStatus();
         if (myPlayer == null)
             findMyPlayer();
 
         if (myPlayer == null)
             return;
-
+        
+        bool buttonsAvailable = false;
         timer -= Time.deltaTime;
         if(timer < 0) {
             timer = 0;
-            setAllInteractable(true);
+            buttonsAvailable = true;
         }
 
-        if (GameObject.Find("WaitingPanel").transform.position == new Vector3())
-        {
-            foreach (GameObject go in units)
-                go.GetComponent<UnitBase>().level = 1;
-
-            for (int i = 0; i < units.Length; i++)
-            {
-                upgradePanel.transform.FindChild("UnitUpgrade" + (i + 1)).GetComponent<Button>().interactable = false;
-                unitPanel.transform.FindChild("UnitBuy" + (i + 1)).GetComponent<Button>().interactable = false;
+        if (GameObject.Find("WaitingPanel").transform.position == new Vector3()) {
+            print("Player's rematch status: " + myPlayer.getRematchStatus());
+            if (!myPlayer.getRematchStatus()) {
+                endGame();
+            } else {
+                rematchWait();
             }
-
             return;
         }
 
 
-        foreach (GameObject go in units)
+        foreach (GameObject go in units) {
             go.GetComponent<UnitBase>().setStats();
+        }
 
         for (int i = 0; i < units.Length; i++)
         {
@@ -61,9 +58,9 @@ public class ButtonManager : NetworkBehaviour {
                    myPlayer.purple < units[i].GetComponent<UnitBase>().purple)
                     unitPanel.transform.FindChild("UnitBuy" + (i + 1)).GetComponent<Button>().interactable = false;
                 else
-                    unitPanel.transform.FindChild("UnitBuy" + (i + 1)).GetComponent<Button>().interactable = true;
+                    unitPanel.transform.FindChild("UnitBuy" + (i + 1)).GetComponent<Button>().interactable = buttonsAvailable;
             }
-        }
+        } 
 
         //Hardcoded Stuff
         unitPanel.transform.FindChild("UnitBuy1").transform.FindChild("UnitCostPanel").transform.FindChild("ResourceCost").transform.FindChild("Cost").GetComponent<Text>().text = "x " + units[0].GetComponent<UnitBase>().green;
@@ -82,59 +79,30 @@ public class ButtonManager : NetworkBehaviour {
         }
     }
 
-    private void checkRematchStatus() {
-        GameObject[] playerHolder = GameObject.FindGameObjectsWithTag("Player");
-        foreach (GameObject go in playerHolder) {
-            Player temp = go.GetComponent<Player>();
-            if(temp.isLocalPlayer && temp.getReset()) {
-                if (!p1Rematch) {
-                    p1Rematch = true;
-                }
-            } else {
-                if(temp.getReset() && !p2Rematch) {
-                    p2Rematch = true;
-                }
-            }
-        }
-        if(p1Rematch && p2Rematch) {
-            rematchAccepted = true;
-        }
+    public void endGame() {
+        setAllInteractable(false);
+        Button resetButton = GameObject.Find("WaitingPanel").transform.FindChild("ResetButton").GetComponent<Button>();
+        resetButton.transform.FindChild("Text").GetComponent<Text>().text = "Play Again?";
+        resetButton.gameObject.SetActive(true);
+        resetButton.interactable = true;
     }
 
-    public void endGame()
-    {
-        foreach (GameObject go in units)
-        {
-            go.GetComponent<UnitBase>().level = 1;
+    public void requestRematch() {
+        if(myPlayer == null) {
+            findMyPlayer();
         }
-
-        for (int i = 0; i < units.Length; i++) {
-            upgradePanel.transform.FindChild("UnitUpgrade" + (i + 1)).GetComponent<Button>().interactable = false;
-            unitPanel.transform.FindChild("UnitBuy" + (i + 1)).GetComponent<Button>().interactable = false;
-        }
-        //Button resetButton = GameObject.Find("WaitingPanel").transform.FindChild("ResetButton").GetComponent<Button>();
-        //resetButton.transform.FindChild("Text").GetComponent<Text>().text = "Play Again?";
-        //resetButton.gameObject.SetActive(true);
-        //resetButton.interactable = true;
+        myPlayer.Cmd_requestRematch();
     }
 
-    public void askForRematch() {
+    public void rematchWait() {
         foreach (GameObject go in units) {
             go.GetComponent<UnitBase>().level = 1;
         }
         GameObject.Find("WaitingPanel").transform.FindChild("Text").GetComponent<Text>().text = "Waiting for other player...";
         Button resetButton = GameObject.Find("WaitingPanel").transform.FindChild("ResetButton").GetComponent<Button>();
         resetButton.interactable = false;
-        myPlayer.Cmd_setReset(true);
     }
-
-    private void rematch()
-    {
-        if (myPlayer.playerNum == 1) {
-            GameObject.Find("Board").GetComponent<BoardManager>().reset();
-        }
-    }
-
+    
     public void upgrade(int unit)
     {
         if(myPlayer == null)
@@ -170,16 +138,16 @@ public class ButtonManager : NetworkBehaviour {
         }
     }
 
-
-    private void findMyPlayer()
-    {
+    private void findMyPlayer() {
         GameObject[] playerHolder = GameObject.FindGameObjectsWithTag("Player");
         foreach (GameObject go in playerHolder)
+        {
+            print(go.GetComponent<Player>().playerNum);
             if (go.GetComponent<Player>().isLocalPlayer)
                 myPlayer = go.GetComponent<Player>();
+        }
 
-        if(isServer)
-        {
+        if(isServer) {
             startingX = GameObject.Find("Player1Base").transform.position.x;
             startingY = GameObject.Find("Player1Base").transform.position.y;
         }
@@ -213,6 +181,13 @@ public class ButtonManager : NetworkBehaviour {
         if (Input.GetKeyUp(KeyCode.T) && upgradePanel.transform.FindChild("UnitUpgrade5").GetComponent<Button>().interactable)
             upgrade(4);
 
+        GameObject help = GameObject.Find("InstructionPanel");
+        if(Input.GetKeyUp(KeyCode.Tab)) { showHelp = (showHelp) ? false : true; }
+        if (showHelp) {
+            help.transform.position = Vector2.zero;
+        }
+        else {
+            help.transform.position = new Vector2(1000, 0);
+        }
     }
-
 }

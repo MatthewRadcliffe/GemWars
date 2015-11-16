@@ -15,6 +15,8 @@ public class Player : NetworkBehaviour {
     public int purple = 0;
     [SyncVar]
     public float health = 1000;
+    [SyncVar]
+    private bool reset = false;
 
     public int playerNum;
     private GameObject myHealthBar;
@@ -24,10 +26,8 @@ public class Player : NetworkBehaviour {
     private UnitFactory factory;
 
     private bool gameOver = false;
-    private bool reset = false;
 
-    public void Start()
-    {
+    public void Start() {
         if(isLocalPlayer) {
             myResourcePanel = GameObject.Find("PlayersGems");
 
@@ -44,32 +44,61 @@ public class Player : NetworkBehaviour {
         }
     }
 
-    public void FixedUpdate ()
-    {
+    public void FixedUpdate () {
+        if (factory == null)
+            factory = GameObject.Find("GameManager").GetComponent<UnitFactory>();
+        
+        if (!isLocalPlayer)
+            return;
+
         if (!gameOver) {
-            if (factory == null)
-                factory = GameObject.Find("GameManager").GetComponent<UnitFactory>();
-
-            if (!isLocalPlayer)
-                return;
-
-
-            updateUI();
             string endText = "";
-            if (health <= 0) { endText = "Game Over! \n You Lose."; }
-            else if (opponent != null && opponent.GetComponent<Player>().health <= 0) { endText = "Game Over! \n You Win."; }
+            if (health <= 0) { health = 0;
+                endText = "Game Over! \n You Lose.";
+            } else if (opponent != null && opponent.GetComponent<Player>().health <= 0) {
+                opponent.GetComponent<Player>().health = 0;
+                endText = "Game Over! \n You Win.";
+            }
 
             if (endText.Length > 0) {
                 GameObject.Find("WaitingPanel").transform.position = new Vector3();
                 GameObject.Find("WaitingPanel").transform.FindChild("Text").GetComponent<Text>().text = endText;
-                //gameOver = true;
+                gameOver = true;
 
                 foreach (GameObject go in GameObject.FindGameObjectsWithTag("Tile")) {
                     Destroy(go);
                 }
             }
+            updateUI();
         }
 	}
+
+    public bool getRematchStatus() {
+        return reset;
+    }
+
+    [Command]
+     public void Cmd_requestRematch() {
+        if(!isServer) {
+            return;
+        }
+        reset = true;
+    }
+    
+    [Command]
+    public void Cmd_resetPlayer() {
+        if(!isServer) {
+            return;
+        }
+        gameOver = false;
+        reset = false;
+        yellow = 0;
+        red = 0;
+        green = 0;
+        blue = 0;
+        purple = 0;
+        health = 1000;
+}
 
     [Command]
     public void Cmd_receiveInput(bool leftClick, Vector3 mousePosition)  {
@@ -77,24 +106,14 @@ public class Player : NetworkBehaviour {
         PlayerInput input = inputBoard.GetComponent<PlayerInput>();
         if (leftClick) {
             input.onLeftClick(playerNum, mousePosition);
-        } else {
+        }
+        else {
             input.onRightClick(playerNum);
         }
-
     }
-
+    
     [Command]
-    public void Cmd_setReset(bool reset) {
-        this.reset = reset;
-    }
-
-    public bool getReset() {
-        return reset;
-    }
-
-    [Command]
-    public void Cmd_spawnUnit(string unit, int level, float x, float y)
-    {
+    public void Cmd_spawnUnit(string unit, int level, float x, float y) {
         GameObject newUnit = (GameObject)Instantiate(Resources.Load(unit), new Vector2(x, y), Quaternion.identity);
         newUnit.GetComponent<UnitBase>().level = level;
         newUnit.GetComponent<UnitBase>().setStats();
@@ -104,19 +123,17 @@ public class Player : NetworkBehaviour {
     }
 
     [Command]
-    public void Cmd_gainHealth(float amount)
-    {
+    public void Cmd_gainHealth(float amount) {
         if (!isServer)
             return;
 
         health += amount;
-        if (health > 100)
-            health = 100;
+        if (health > 1000)
+            health = 1000;
     }
 
     [Command]
-    public void Cmd_loseHealth(float amount)
-    {
+    public void Cmd_loseHealth(float amount) {
         if (!isServer)
             return;
 
@@ -126,13 +143,11 @@ public class Player : NetworkBehaviour {
     }
 
     [Command]
-    public void Cmd_gainResource(ResourceType resource, int amount)
-    {
+    public void Cmd_gainResource(ResourceType resource, int amount) {
         if (!isServer)
             return;
 
-        switch (resource)
-        {
+        switch (resource) {
             case ResourceType.Yellow:
                 yellow += amount;
                 break;
@@ -152,13 +167,11 @@ public class Player : NetworkBehaviour {
     }
 
     [Command]
-    public void Cmd_spendResource(ResourceType resource, int amount)
-    {
+    public void Cmd_spendResource(ResourceType resource, int amount) {
         if (!isServer)
             return;
 
-        switch (resource)
-        {
+        switch (resource) {
             case ResourceType.Yellow:
                 yellow -= amount;
                 break;
@@ -198,6 +211,5 @@ public class Player : NetworkBehaviour {
         }
         opponentsHealthBar.transform.FindChild("Health").GetComponent<Image>().fillAmount = (opponent.GetComponent<Player>().health / 1000);
         opponentsHealthBar.transform.FindChild("Health").transform.FindChild("Amount").GetComponent<Text>().text = opponent.GetComponent<Player>().health + " / 1000";
-
     }
 }

@@ -40,8 +40,6 @@ public class BoardManager : MonoBehaviour {
         }
     }
 
-    public void reset() { InitializeSpawn(); }
-    
     private void InitializeSpawn() {
         if (board != null) {
             WipeBoard();
