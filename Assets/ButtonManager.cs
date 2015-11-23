@@ -28,7 +28,6 @@ public class ButtonManager : NetworkBehaviour {
         }
 
         if (GameObject.Find("WaitingPanel").transform.position == new Vector3()) {
-            print("Player's rematch status: " + myPlayer.getRematchStatus());
             if (!myPlayer.getRematchStatus()) {
                 endGame();
             } else {
@@ -142,7 +141,6 @@ public class ButtonManager : NetworkBehaviour {
         GameObject[] playerHolder = GameObject.FindGameObjectsWithTag("Player");
         foreach (GameObject go in playerHolder)
         {
-            print(go.GetComponent<Player>().playerNum);
             if (go.GetComponent<Player>().isLocalPlayer)
                 myPlayer = go.GetComponent<Player>();
         }

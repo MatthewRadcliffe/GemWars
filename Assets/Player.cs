@@ -17,6 +17,8 @@ public class Player : NetworkBehaviour {
     public float health = 1000;
     [SyncVar]
     private bool reset = false;
+    [SyncVar]
+    private bool gameOver = false;
 
     public int playerNum;
     private GameObject myHealthBar;
@@ -24,8 +26,6 @@ public class Player : NetworkBehaviour {
     private GameObject opponent;
     private GameObject opponentsHealthBar;
     private UnitFactory factory;
-
-    private bool gameOver = false;
 
     public void Start() {
         if(isLocalPlayer) {
@@ -98,7 +98,10 @@ public class Player : NetworkBehaviour {
         blue = 0;
         purple = 0;
         health = 1000;
-}
+        GameObject inputBoard = GameObject.Find("Board");
+        PlayerInput input = inputBoard.GetComponent<PlayerInput>();
+        input.reset();
+    }
 
     [Command]
     public void Cmd_receiveInput(bool leftClick, Vector3 mousePosition)  {

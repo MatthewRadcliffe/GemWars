@@ -7,7 +7,9 @@ public class UnitBase : NetworkBehaviour {
     public Player controller;
     public Player opposingPlayer;
     public int level;
+    [SyncVar]
     public float health;
+    [SyncVar]
     public float startHP;
     public float power;
     public float speed;
