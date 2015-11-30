@@ -17,31 +17,12 @@ Loading E:\School\GemWars\GemWars_Data\Managed\UnityEngine.UI.dll into Unity Chi
 Platform assembly: E:\School\GemWars\GemWars_Data\Managed\UnityEngine.Networking.dll (this message is harmless)
 Loading E:\School\GemWars\GemWars_Data\Managed\UnityEngine.Networking.dll into Unity Child Domain
 Platform assembly: E:\School\GemWars\GemWars_Data\Managed\System.Core.dll (this message is harmless)
-- Completed reload, in  0.146 seconds
+- Completed reload, in  0.099 seconds
 desktop: 1920x1080 60Hz; virtual: 1920x1080 at 0,0
 <RI> Initializing input.
 <RI> Input initialized.
 <RI> Initialized touch support.
 Platform assembly: E:\School\GemWars\GemWars_Data\Managed\System.dll (this message is harmless)
 Setting up 2 worker threads for Enlighten.
-  Thread -> id: 1958 -> priority: 1 
-  Thread -> id: 2148 -> priority: 1 
-Log: connection {1} has been disconnected by timeout; address {::ffff:127.0.0.1:7777}
-aissp: time {79463} lastRecTime {77403} DisTme {2000}, rtt {0} 
- 
-(Filename:  Line: 1848)
-
-UNet Client Disconnect Error: Timeout
- 
-(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 64)
-
-Unloading 2 Unused Serialized files (Serialized files now loaded: 0)
-UnloadTime: 4.654043 ms
-Multiple NetworkManagers detected in the scene. Only one NetworkManager can exist at a time. The duplicate NetworkManager will not be used.
- 
-(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 64)
-
-
-Unloading 1 unused Assets to reduce memory usage. Loaded Objects now: 1036.
-Total: 0.969763 ms (FindLiveObjects: 0.034927 ms CreateObjectMapping: 0.124096 ms MarkObjects: 0.804985 ms  DeleteObjects: 0.005341 ms)
-
+  Thread -> id: 465c -> priority: 1 
+  Thread -> id: a44 -> priority: 1 

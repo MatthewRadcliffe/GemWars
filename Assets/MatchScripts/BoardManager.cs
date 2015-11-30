@@ -8,18 +8,25 @@ public class BoardManager : MonoBehaviour {
     private MatchBoard board;
     private PlayerInput input;
     private ResourceGiver giver;
-    
+    private AudioSource audio;
+    private AudioClip matchSound;
+
     public readonly Vector2 BottomRight = new Vector2(-3.00f, -3.90f);
     public readonly Vector2 TileSize = new Vector2(1.0f, 1.0f);
     
     private Vector2[] SpawnPositions;
     private GameObject[] TilePrefabs;
+    private int combo;
+    private bool muted;
     
     public void InitializeReferences(GameObject [] Prefabs, GameObject p1Indicator, GameObject p2Indicator) {
         board = this.gameObject.AddComponent<MatchBoard>();
         input = this.gameObject.AddComponent<PlayerInput>();
         input.initIndicators(p1Indicator, p2Indicator);
         giver = this.gameObject.AddComponent<ResourceGiver>();
+        audio = this.gameObject.GetComponent<AudioSource>();
+        matchSound = audio.clip;
+        muted = false;
 
         TilePrefabs = Prefabs;
         InitializeTypes();
@@ -28,6 +35,9 @@ public class BoardManager : MonoBehaviour {
     
     void Update() {
         GameState state = input.commonUpdate();
+
+        muted = GameObject.Find("GameManager").GetComponent<ButtonManager>().muted;
+
         if(state == GameState.Animating) {
             FixSortingLayer(input.getInitial(), input.getTarget().collider.gameObject);
             StartCoroutine(FindMatchesAndCollapse(input.getInitial(), input.getTarget(), input.currentPlayer()));
@@ -108,8 +118,15 @@ public class BoardManager : MonoBehaviour {
             iTween.MoveTo(t2, t1.transform.position, Constants.MoveAnimationDuration);
             yield return new WaitForSeconds(Constants.MoveAnimationDuration);
         }
-        
+
+        combo = 0;
         while (totalMatches.Count() >= Constants.minMatches) {
+            combo++;
+            audio.pitch = .7f + (.1f * combo);
+            if(!muted) {
+                audio.PlayOneShot(matchSound, .7f);
+            }
+
             int resourceAmount = Constants.minMatches;
             if(totalMatches.Count() > Constants.minMatches) {
                 resourceAmount += (totalMatches.Count() - 3) * 2;

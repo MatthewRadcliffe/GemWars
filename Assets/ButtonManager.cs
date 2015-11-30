@@ -7,6 +7,9 @@ public class ButtonManager : NetworkBehaviour {
     public GameObject[] units;
     public GameObject unitPanel; 
     public GameObject upgradePanel;
+    public bool muted = false;
+    public Sprite muteImg;
+    public Sprite soundImg;
     private Player myPlayer;
     private float startingX;
     private float startingY;
@@ -14,6 +17,15 @@ public class ButtonManager : NetworkBehaviour {
     private bool showHelp;
 
     public void FixedUpdate() {
+        if (muted) {
+            this.gameObject.GetComponent<AudioSource>().mute = true;
+            GameObject.Find("MuteButton").GetComponent<Image>().overrideSprite = muteImg;
+        }
+        else {
+            this.gameObject.GetComponent<AudioSource>().mute = false;
+            GameObject.Find("MuteButton").GetComponent<Image>().overrideSprite = soundImg;
+        }
+
         if (myPlayer == null)
             findMyPlayer();
 
@@ -109,6 +121,11 @@ public class ButtonManager : NetworkBehaviour {
 
         units[unit].GetComponent<UnitBase>().upgrade();
         myPlayer.Cmd_spendResource(ResourceType.Yellow, units[unit].GetComponent<UnitBase>().upgradeCost);
+    }
+
+    public void toggleMute()
+    {
+        muted = !muted;
     }
 
     public void purchaseUnit(int unit)
