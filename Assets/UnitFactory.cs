@@ -13,7 +13,7 @@ public class UnitFactory : NetworkBehaviour {
 
 	void Update () {
         moveUnits(p1Units, 1);
-        moveUnits(p2Units, -1);
+        moveUnits(p2Units, 1);
 	}
 
     public void spawnUnit(GameObject unit, Player p) {
@@ -22,6 +22,7 @@ public class UnitFactory : NetworkBehaviour {
             unit.gameObject.layer = 9;
             p1Units.Add(unit);
         } else {
+            unit.transform.localRotation = Quaternion.Euler(0, 180, 0);
             p2Units.Add(unit);
             unit.gameObject.layer = 10;
         }
