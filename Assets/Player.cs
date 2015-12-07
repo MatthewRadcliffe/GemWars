@@ -21,6 +21,7 @@ public class Player : NetworkBehaviour {
     private bool gameOver = false;
 
     public int playerNum;
+    private GameObject myBase, opponentBase;
     private GameObject myHealthBar;
     private GameObject myResourcePanel;
     private GameObject opponent;
@@ -35,11 +36,15 @@ public class Player : NetworkBehaviour {
                 myHealthBar = GameObject.Find("Player1HealthBar");
                 opponentsHealthBar = GameObject.Find("Player2HealthBar");
                 playerNum = 1;
+                myBase = GameObject.Find("Player1Base");
+                opponentBase = GameObject.Find("Player2Base");
             }
             else {
                 myHealthBar = GameObject.Find("Player2HealthBar");
                 opponentsHealthBar = GameObject.Find("Player1HealthBar");
                 playerNum = 2;
+                myBase = GameObject.Find("Player2Base");
+                opponentBase = GameObject.Find("Player1Base");
             }
         }
     }
@@ -197,6 +202,9 @@ public class Player : NetworkBehaviour {
     {
         myHealthBar.transform.FindChild("Health").GetComponent<Image>().fillAmount = health / 1000f;
         myHealthBar.transform.FindChild("Health").transform.FindChild("Amount").GetComponent<Text>().text = health + " / 1000";
+
+        myBase.GetComponent<CastleUpdater>().updateSprite(health);
+
         myResourcePanel.transform.FindChild("YellowGem").transform.FindChild("GemCount").GetComponent<Text>().text = "x " + yellow;
         myResourcePanel.transform.FindChild("RedGem").transform.FindChild("GemCount").GetComponent<Text>().text = "x " + red;
         myResourcePanel.transform.FindChild("GreenGem").transform.FindChild("GemCount").GetComponent<Text>().text = "x " + green;
@@ -214,5 +222,7 @@ public class Player : NetworkBehaviour {
         }
         opponentsHealthBar.transform.FindChild("Health").GetComponent<Image>().fillAmount = (opponent.GetComponent<Player>().health / 1000);
         opponentsHealthBar.transform.FindChild("Health").transform.FindChild("Amount").GetComponent<Text>().text = opponent.GetComponent<Player>().health + " / 1000";
+
+        opponentBase.GetComponent<CastleUpdater>().updateSprite(opponent.GetComponent<Player>().health);
     }
 }

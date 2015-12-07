@@ -50,6 +50,10 @@ public class UnitBase : NetworkBehaviour {
             if (go.GetComponent<UnitBase>() != null)
                 go.GetComponent<UnitBase>().unitDied(this.gameObject);
         }
+
+        GameObject deathAnimation = (GameObject)Instantiate(Resources.Load("DeathAnimation"), this.transform.position, Quaternion.identity);
+        NetworkServer.Spawn(deathAnimation);
+        Destroy(deathAnimation, 1.0f);
         Destroy(this.gameObject);
     }
 

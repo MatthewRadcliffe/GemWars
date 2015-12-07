@@ -138,6 +138,7 @@ public class ButtonManager : NetworkBehaviour {
         if (timer <= 0) {
             if (unit != 4) {
                 myPlayer.Cmd_spawnUnit(units[unit].transform.name, units[unit].GetComponent<UnitBase>().level, startingX, startingY - .2f);
+                print(units[unit].transform.name);
             }
             else {
                 myPlayer.Cmd_spawnUnit(units[unit].transform.name, units[unit].GetComponent<UnitBase>().level, startingX, startingY + .4f);
