@@ -134,6 +134,30 @@ public class BoardManager : MonoBehaviour {
             
             ResourceType typeToGive = totalMatches.ElementAt(0).GetComponent<TileInfo>().type;
 
+            foreach (var item in totalMatches)
+            {
+                GameObject ps = (GameObject)Instantiate(Resources.Load("gemCollect"), item.transform.position, Quaternion.identity);
+                print(item.name);
+                switch (item.name)
+                {
+                    case "redTile(Clone)":
+                        ps.GetComponent<ParticleSystemRenderer>().material = (Material)Resources.Load("redMat");
+                        break;
+                    case "greenTile(Clone)":
+                        ps.GetComponent<ParticleSystemRenderer>().material = (Material)Resources.Load("greenMat");
+                        break;
+                    case "blueTile(Clone)":
+                        ps.GetComponent<ParticleSystemRenderer>().material = (Material)Resources.Load("blueMat");
+                        break;
+                    case "yellowTile(Clone)":
+                        ps.GetComponent<ParticleSystemRenderer>().material = (Material)Resources.Load("yellowMat");
+                        break;
+                    case "purpleTile(Clone)":
+                        ps.GetComponent<ParticleSystemRenderer>().material = (Material)Resources.Load("purpleMat");
+                        break;
+                }
+            }
+
             foreach (var item in totalMatches) {
                 animateResource(playerNum, item);
             }
