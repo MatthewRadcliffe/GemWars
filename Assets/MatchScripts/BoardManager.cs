@@ -4,7 +4,7 @@ using System.Collections;
 using System.Linq;
 using System.Collections.Generic;
 
-public class BoardManager : MonoBehaviour {
+public class BoardManager : NetworkBehaviour {
     private MatchBoard board;
     private PlayerInput input;
     private ResourceGiver giver;
@@ -137,7 +137,6 @@ public class BoardManager : MonoBehaviour {
             foreach (var item in totalMatches)
             {
                 GameObject ps = (GameObject)Instantiate(Resources.Load("gemCollect"), item.transform.position, Quaternion.identity);
-                print(item.name);
                 switch (item.name)
                 {
                     case "redTile(Clone)":
@@ -156,6 +155,7 @@ public class BoardManager : MonoBehaviour {
                         ps.GetComponent<ParticleSystemRenderer>().material = (Material)Resources.Load("purpleMat");
                         break;
                 }
+                NetworkServer.Spawn(ps);
             }
 
             foreach (var item in totalMatches) {
